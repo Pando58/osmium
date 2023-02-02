@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, sans-serif;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+#app {
+  @apply h-screen w-screen;
+}
+
+.debug {
+  @apply outline-dashed outline-1 outline-green-400/50;
+  /* @apply border-4 border-transparent; */
+  /* @apply m-0.5 p-0.5; */
+}
