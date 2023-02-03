@@ -1,4 +1,6 @@
 <script lang="ts">
+  import floating_inactive from "@/assets/windowIcons/floating_inactive.svg";
+  import floating_active from "@/assets/windowIcons/floating_active.svg";
   import { createEventDispatcher } from "svelte";
 
   export let id: number;
@@ -44,37 +46,43 @@
 </script>
 
 <section
-  class={`debug ${floating ? "absolute" : "relative flex-1"}`}
+  class={`${floating ? "absolute" : "relative flex-1"}`}
   style:left={floating ? x + "px" : "auto"}
   style:top={floating ? y + "px" : "auto"}
   style:width={floating ? w + "px" : "auto"}
   style:height={floating ? h + "px" : "auto"}
 >
-  <div class="debug absolute inset-0 flex flex-col" class:m-1={!floating}>
-    <div
-      class="debug flex h-6 justify-between"
-      on:pointerdown={onPointerDownTabBar}
-    >
+  <div
+    class="absolute inset-0 flex flex-col border-black/20 bg-zinc-900 shadow-black/30"
+    class:m-0.5={!floating}
+    class:border={floating}
+    class:shadow-lg={floating}
+  >
+    <div class="flex h-6 justify-between" on:pointerdown={onPointerDownTabBar}>
       <div class="flex gap-0.5 pl-1 pt-1">
         {#each [...tabs.entries()] as [_tabId, tab]}
           <div
-            class="debug flex items-center px-1"
+            class="flex items-center bg-zinc-800 px-1"
             on:pointerdown={onPointerDownTab}
           >
             <span class="text-xs">{tab.name}</span>
           </div>
         {/each}
       </div>
-      <button class="debug relative m-1 w-4" on:click={toggleFloating}>
-        <div
-          class="absolute inset-0.5 rounded border-2 border-neutral-200"
-          class:bg-neutral-200={!floating}
+      <button
+        class="relative m-1 grid w-4 place-items-center"
+        on:click={toggleFloating}
+      >
+        <img
+          src={floating ? floating_active : floating_inactive}
+          class="w-2"
+          alt="floating active"
         />
       </button>
     </div>
-    <div class="debug relative flex-1">
+    <div class="relative flex-1 bg-zinc-800">
       {#if selectedTab}
-        <div class="debug absolute inset-2">
+        <div class="absolute inset-2">
           <svelte:component this={selectedTab.component} />
         </div>
       {/if}

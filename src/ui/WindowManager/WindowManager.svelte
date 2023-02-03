@@ -99,7 +99,10 @@
   });
 </script>
 
-<div class="absolute inset-0 flex overflow-hidden" bind:this={mainContainer}>
+<div
+  class="absolute inset-0 flex overflow-hidden p-0.5"
+  bind:this={mainContainer}
+>
   {#each [...$windows.entries()] as [windowId, win]}
     <SectionWindow
       id={windowId}

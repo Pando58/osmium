@@ -15,6 +15,6 @@
   });
 </script>
 
-<main class="h-screen w-screen bg-neutral-900 text-white">
+<main class="h-screen w-screen bg-zinc-900 text-white">
   <WindowManager />
 </main>
