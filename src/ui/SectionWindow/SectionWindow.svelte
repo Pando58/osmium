@@ -2,6 +2,7 @@
   import floating_inactive from "@/assets/windowIcons/floating_inactive.svg";
   import floating_active from "@/assets/windowIcons/floating_active.svg";
   import { createEventDispatcher } from "svelte";
+  import type { TabProps } from "../WindowManager/types";
 
   export let id: number;
   export let floating: boolean;
@@ -10,13 +11,7 @@
   export let w: number;
   export let h: number;
 
-  export let tabs: Map<
-    number,
-    {
-      name: string;
-      component: ConstructorOfATypedSvelteComponent;
-    }
-  >;
+  export let tabs: Map<number, TabProps>;
 
   let selectedTabId = 0;
 
@@ -83,7 +78,10 @@
     <div class="relative flex-1 bg-zinc-800">
       {#if selectedTab}
         <div class="absolute inset-2">
-          <svelte:component this={selectedTab.component} />
+          <svelte:component
+            this={selectedTab.component}
+            winData={selectedTab.data || {}}
+          />
         </div>
       {/if}
     </div>

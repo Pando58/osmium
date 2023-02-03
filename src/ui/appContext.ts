@@ -1,3 +1,5 @@
+import type { ComponentType, SvelteComponentTyped } from "svelte";
+
 export const appKey = Symbol();
 
 export type WindowConfig = {
@@ -5,7 +7,11 @@ export type WindowConfig = {
   pos: [number, number] | "center";
   w: number;
   h: number;
-  tabs: { name: string; component: ConstructorOfATypedSvelteComponent }[];
+  tabs: {
+    name: string;
+    component: ComponentType<SvelteComponentTyped>;
+    data?: Record<string, any>;
+  }[];
 };
 
 export interface AppContext {
