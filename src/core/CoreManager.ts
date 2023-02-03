@@ -1,3 +1,4 @@
+import { getNextId } from "@/misc/getNextId";
 import { Section } from "./classes/Section";
 import { Track } from "./classes/Track";
 
@@ -32,14 +33,4 @@ export class CoreManager {
 
     this.sections.set(sectionId, section);
   }
-}
-
-function getNextId(map: Map<number, unknown>) {
-  for (let i = 0; i < map.size; i++) {
-    if (!map.has(i)) {
-      return i;
-    }
-  }
-
-  return map.size;
 }
