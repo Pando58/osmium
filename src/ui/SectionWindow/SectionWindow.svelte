@@ -34,25 +34,43 @@
   function onPointerDownTab(e: PointerEvent) {
     e.stopPropagation();
   }
+
+  //
+  function toggleFloating() {
+    dispatch("toggle_floating", {
+      windowId: id,
+    });
+  }
 </script>
 
 <section
-  class="debug absolute"
-  style:left={x + "px"}
-  style:top={y + "px"}
-  style:width={w + "px"}
-  style:height={h + "px"}
+  class={`debug ${floating ? "absolute" : "relative flex-1"}`}
+  style:left={floating ? x + "px" : "auto"}
+  style:top={floating ? y + "px" : "auto"}
+  style:width={floating ? w + "px" : "auto"}
+  style:height={floating ? h + "px" : "auto"}
 >
   <div class="debug absolute inset-0 flex flex-col" class:m-1={!floating}>
-    <div class="debug flex h-6 gap-1" on:pointerdown={onPointerDownTabBar}>
-      {#each [...tabs.entries()] as [_tabId, tab]}
+    <div
+      class="debug flex h-6 justify-between"
+      on:pointerdown={onPointerDownTabBar}
+    >
+      <div class="flex gap-0.5 pl-1 pt-1">
+        {#each [...tabs.entries()] as [_tabId, tab]}
+          <div
+            class="debug flex items-center px-1"
+            on:pointerdown={onPointerDownTab}
+          >
+            <span class="text-xs">{tab.name}</span>
+          </div>
+        {/each}
+      </div>
+      <button class="debug relative m-1 w-4" on:click={toggleFloating}>
         <div
-          class="debug flex items-center px-1"
-          on:pointerdown={onPointerDownTab}
-        >
-          <span class="text-xs">{tab.name}</span>
-        </div>
-      {/each}
+          class="absolute inset-0.5 rounded border-2 border-neutral-200"
+          class:bg-neutral-200={!floating}
+        />
+      </button>
     </div>
     <div class="debug relative flex-1">
       {#if selectedTab}

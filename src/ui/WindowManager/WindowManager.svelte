@@ -86,6 +86,7 @@
       const win = windows.get(draggedWindowId);
 
       if (!win) return;
+      if (!win.floating) return;
 
       win.x = Math.max(
         Math.min(e.clientX - draggedWindowOffsetX, innerWidth - 20),
@@ -107,14 +108,24 @@
     removeEventListener("pointerup", onPointerUp);
     removeEventListener("pointermove", onPointerMove);
   });
+
+  function onToggleFloating({ detail }: CustomEvent<{ windowId: number }>) {
+    const win = windows.get(detail.windowId);
+
+    if (!win) return;
+
+    win.floating = !win.floating;
+    windows = windows;
+  }
 </script>
 
-<div class="absolute inset-0 overflow-hidden">
+<div class="absolute inset-0 flex overflow-hidden">
   {#each [...windows.entries()] as [windowId, win]}
     <SectionWindow
       id={windowId}
       {...win}
       on:pointerdown_window={onPointerDownWindow}
+      on:toggle_floating={onToggleFloating}
     />
   {/each}
 </div>
