@@ -1,68 +1,65 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
+  import { writable, type Writable } from "svelte/store";
   import SectionWindow from "../SectionWindow/SectionWindow.svelte";
   import WindowTracks from "../WindowTracks/WindowTracks.svelte";
+  import { pointerHandling } from "./pointerHandling";
+  import type { SecWindow } from "./types";
 
-  interface SecWindow {
-    floating: boolean;
-    x: number;
-    y: number;
-    w: number;
-    h: number;
-    tabs: Map<
-      number,
-      {
-        name: string;
-        component: ConstructorOfATypedSvelteComponent;
-      }
-    >;
-  }
-
-  let windows: Map<number, SecWindow> = new Map([
-    [
-      0,
-      {
-        floating: true,
-        x: 20,
-        y: 20,
-        w: 600,
-        h: 600,
-        tabs: new Map([
-          [
-            0,
-            {
-              name: "Tracks",
-              component: WindowTracks,
-            },
-          ],
-        ]),
-      },
-    ],
-    [
-      1,
-      {
-        floating: true,
-        x: 700,
-        y: 20,
-        w: 600,
-        h: 600,
-        tabs: new Map([
-          [
-            0,
-            {
-              name: "Tracks",
-              component: WindowTracks,
-            },
-          ],
-        ]),
-      },
-    ],
-  ]);
+  const windows: Writable<Map<number, SecWindow>> = writable(
+    new Map([
+      [
+        0,
+        {
+          floating: true,
+          x: 20,
+          y: 20,
+          w: 600,
+          h: 600,
+          tabs: new Map([
+            [
+              0,
+              {
+                name: "Tracks",
+                component: WindowTracks,
+              },
+            ],
+          ]),
+        },
+      ],
+      [
+        1,
+        {
+          floating: true,
+          x: 700,
+          y: 20,
+          w: 600,
+          h: 600,
+          tabs: new Map([
+            [
+              0,
+              {
+                name: "Tracks",
+                component: WindowTracks,
+              },
+            ],
+          ]),
+        },
+      ],
+    ])
+  );
 
   // Window dragging
-  let draggedWindowId: number | null = null;
-  let draggedWindowOffsetX = 0;
-  let draggedWindowOffsetY = 0;
+  const draggedWindowId = writable<number | null>(null);
+  const draggedWindowOffsetX = writable(0);
+  const draggedWindowOffsetY = writable(0);
+
+  const pointerHandlingOnDestroy = pointerHandling([
+    draggedWindowId,
+    windows,
+    draggedWindowOffsetX,
+    draggedWindowOffsetY,
+  ]);
 
   function onPointerDownWindow({
     detail,
@@ -71,56 +68,29 @@
     x: number;
     y: number;
   }>) {
-    draggedWindowId = detail.windowId;
+    $draggedWindowId = detail.windowId;
 
-    draggedWindowOffsetX = detail.x;
-    draggedWindowOffsetY = detail.y;
+    $draggedWindowOffsetX = detail.x;
+    $draggedWindowOffsetY = detail.y;
   }
 
-  const onPointerUp = () => {
-    draggedWindowId = null;
-  };
-
-  const onPointerMove = (e: PointerEvent) => {
-    if (draggedWindowId !== null) {
-      const win = windows.get(draggedWindowId);
-
-      if (!win) return;
-      if (!win.floating) return;
-
-      win.x = Math.max(
-        Math.min(e.clientX - draggedWindowOffsetX, innerWidth - 20),
-        20 - win.w
-      );
-      win.y = Math.max(
-        Math.min(e.clientY - draggedWindowOffsetY, innerHeight - 20),
-        20 - win.h
-      );
-
-      windows = windows;
-    }
-  };
-
-  addEventListener("pointerup", onPointerUp);
-  addEventListener("pointermove", onPointerMove);
-
-  onDestroy(() => {
-    removeEventListener("pointerup", onPointerUp);
-    removeEventListener("pointermove", onPointerMove);
-  });
-
   function onToggleFloating({ detail }: CustomEvent<{ windowId: number }>) {
-    const win = windows.get(detail.windowId);
+    const win = $windows.get(detail.windowId);
 
     if (!win) return;
 
     win.floating = !win.floating;
-    windows = windows;
+    $windows = $windows;
   }
+
+  //
+  onDestroy(() => {
+    pointerHandlingOnDestroy();
+  });
 </script>
 
 <div class="absolute inset-0 flex overflow-hidden">
-  {#each [...windows.entries()] as [windowId, win]}
+  {#each [...$windows.entries()] as [windowId, win]}
     <SectionWindow
       id={windowId}
       {...win}
