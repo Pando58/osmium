@@ -10,15 +10,15 @@ type Params = [
 ];
 
 export function pointerHandling([
-  draggedWindowId_,
-  windows_,
-  draggedWindowOffsetX_,
-  draggedWindowOffsetY_,
+  draggedWindowIdStore,
+  windowsStore,
+  draggedWindowOffsetXStore,
+  draggedWindowOffsetYStore,
 ]: Params) {
-  const draggedWindowId = handleStore(draggedWindowId_);
-  const windows = handleStore(windows_);
-  const draggedWindowOffsetX = handleStore(draggedWindowOffsetX_);
-  const draggedWindowOffsetY = handleStore(draggedWindowOffsetY_);
+  const draggedWindowId = handleStore(draggedWindowIdStore);
+  const windows = handleStore(windowsStore);
+  const draggedWindowOffsetX = handleStore(draggedWindowOffsetXStore);
+  const draggedWindowOffsetY = handleStore(draggedWindowOffsetYStore);
 
   const onPointerUp = () => {
     draggedWindowId.value = null;
