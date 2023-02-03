@@ -1,17 +1,21 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
+  import { getContext, onDestroy } from "svelte";
   import { writable, type Writable } from "svelte/store";
+  import { appKey, type AppContext } from "../appContext";
   import SectionWindow from "../SectionWindow/SectionWindow.svelte";
   import WindowTracks from "../WindowTracks/WindowTracks.svelte";
+  import { createWindowHandler } from "./createWindowHandler";
   import { pointerHandling } from "./pointerHandling";
   import type { SecWindow } from "./types";
+
+  let mainContainer: HTMLDivElement;
 
   const windows: Writable<Map<number, SecWindow>> = writable(
     new Map([
       [
         0,
         {
-          floating: true,
+          floating: false,
           x: 20,
           y: 20,
           w: 600,
@@ -30,7 +34,7 @@
       [
         1,
         {
-          floating: true,
+          floating: false,
           x: 700,
           y: 20,
           w: 600,
@@ -47,6 +51,12 @@
         },
       ],
     ])
+  );
+
+  const { onCreateWindow } = getContext<AppContext>(appKey);
+
+  onCreateWindow((params) =>
+    createWindowHandler(params, mainContainer, windows)
   );
 
   // Window dragging
@@ -89,7 +99,7 @@
   });
 </script>
 
-<div class="absolute inset-0 flex overflow-hidden">
+<div class="absolute inset-0 flex overflow-hidden" bind:this={mainContainer}>
   {#each [...$windows.entries()] as [windowId, win]}
     <SectionWindow
       id={windowId}
