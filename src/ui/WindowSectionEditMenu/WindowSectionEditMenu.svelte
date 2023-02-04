@@ -51,25 +51,25 @@
     <div class="flex justify-center p-2">
       <div class="table border-spacing-1.5 text-xs">
         <label class="table-row">
-          <span class="table-cell w-0 pr-1">Start:</span>
+          <span class="table-cell w-0 pr-1">Position:</span>
           <input
             type="number"
             step="1"
             min="0"
             class="table-cell w-20 rounded border border-zinc-700 bg-zinc-850 py-1 px-1 pl-1.5"
-            bind:value={section.start}
-            on:change={() => inputChange({ start: section?.start })}
+            bind:value={section.position}
+            on:change={() => inputChange({ position: section?.position })}
           />
         </label>
         <label class="table-row">
-          <span class="table-cell w-0 pr-1">End:</span>
+          <span class="table-cell w-0 pr-1">Length:</span>
           <input
             type="number"
             step="1"
             min="0"
             class="table-cell w-20 rounded border border-zinc-700 bg-zinc-850 py-1 px-1 pl-1.5"
-            bind:value={section.end}
-            on:change={() => inputChange({ end: section?.end })}
+            bind:value={section.length}
+            on:change={() => inputChange({ length: section?.length })}
           />
         </label>
       </div>

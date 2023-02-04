@@ -21,6 +21,6 @@ export type HandlerCoreTrack = {
 
 export type HandlerCoreSection = {
   id: number;
-  start: number;
-  end: number;
+  position: number;
+  length: number;
 };

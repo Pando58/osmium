@@ -56,8 +56,8 @@
 {#if section}
   <div
     class="debug absolute inset-y-0"
-    style:left={section.start + "px"}
-    style:width={section.end - section.start + "px"}
+    style:left={section.position + "px"}
+    style:width={section.length + "px"}
     on:dblclick={openEditMenu}
   />
 {/if}

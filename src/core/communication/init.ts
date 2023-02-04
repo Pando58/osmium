@@ -14,12 +14,12 @@ export function init(coreManager: CoreManager) {
     };
   });
   cmdsCore.take("section", ({ id }) => {
-    const { start, end } = coreManager.sections.get(id)!;
+    const { position, length } = coreManager.sections.get(id)!;
 
     return {
       id,
-      start,
-      end,
+      position,
+      length,
     };
   });
 
@@ -40,8 +40,8 @@ export function init(coreManager: CoreManager) {
 
     if (!section) return;
 
-    if ("start" in props) section.start = props.start!;
-    if ("end" in props) section.end = props.end!;
+    if ("position" in props) section.position = props.position!;
+    if ("length" in props) section.length = props.length!;
 
     evtsCore.emit("update_section", { id: sectionId });
   });
