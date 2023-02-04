@@ -2,7 +2,7 @@
   import { getContext, onDestroy } from "svelte";
   import { writable, type Writable } from "svelte/store";
   import { appKey, type AppContext } from "../appContext";
-  import SectionWindow from "../SectionWindow/SectionWindow.svelte";
+  import WMWindow from "../WMWindow/WMWindow.svelte";
   import WindowTracks from "../WindowTracks/WindowTracks.svelte";
   import { createWindowHandler } from "./createWindowHandler";
   import { pointerHandling } from "./pointerHandling";
@@ -104,7 +104,7 @@
   bind:this={mainContainer}
 >
   {#each [...$windows.entries()] as [windowId, win]}
-    <SectionWindow
+    <WMWindow
       id={windowId}
       {...win}
       on:pointerdown_window={onPointerDownWindow}
