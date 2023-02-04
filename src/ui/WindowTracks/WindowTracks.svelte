@@ -1,31 +1,25 @@
 <script lang="ts">
   import { evtsUI } from "@/ui/communication/handlers";
-  import {
-    cmdsCore,
-    evtsCore,
-    type HandlerCoreTrack,
-  } from "@/core/communication/handlers";
+  import { cmdsCore, evtsCore } from "@/core/communication/handlers";
   import { onDestroy } from "svelte";
   import Track from "./Track.svelte";
 
-  let tracks: HandlerCoreTrack[] = [];
+  let trackIds: number[] = [];
 
   //
-  async function updateTracks() {
-    tracks = await cmdsCore.request("tracks", null).catch((err) => {
+  async function updateTrackIds() {
+    trackIds = await cmdsCore.request("track_ids", null).catch((err) => {
       console.error(err);
-      return tracks;
+      return trackIds;
     });
   }
 
-  updateTracks();
+  updateTrackIds();
 
-  const onUpdateTracks = () => updateTracks();
-
-  evtsCore.on("update_tracks", onUpdateTracks);
+  evtsCore.on("update_tracks", updateTrackIds);
 
   onDestroy(() => {
-    evtsCore.unsub("update_tracks", onUpdateTracks);
+    evtsCore.unsub("update_tracks", updateTrackIds);
   });
 
   //
@@ -36,8 +30,8 @@
 
 <section class="debug absolute inset-0">
   <ul>
-    {#each tracks as track}
-      <Track {track} />
+    {#each trackIds as id}
+      <Track {id} />
     {/each}
     <li class="debug">
       <div class="debug grid h-16 w-36 place-items-center">

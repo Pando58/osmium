@@ -1,15 +1,27 @@
 import { evtsUI } from "@/ui/communication/handlers";
 import type { CoreManager } from "../CoreManager";
-import {
-  cmdsCore,
-  evtsCore,
-  type HandlerCoreSection,
-  type HandlerCoreTrack,
-} from "./handlers";
+import { cmdsCore, evtsCore } from "./handlers";
 
 export function init(coreManager: CoreManager) {
-  cmdsCore.take("tracks", () => getMsgTracks());
-  cmdsCore.take("sections", ({ trackId }) => getMsgSections(trackId));
+  cmdsCore.take("track_ids", () => [...coreManager.tracks.keys()]);
+  cmdsCore.take("track", ({ id }) => {
+    const { sectionIds, name } = coreManager.tracks.get(id)!;
+
+    return {
+      id,
+      sectionIds,
+      name,
+    };
+  });
+  cmdsCore.take("section", ({ id }) => {
+    const { start, end } = coreManager.sections.get(id)!;
+
+    return {
+      id,
+      start,
+      end,
+    };
+  });
 
   evtsUI.on("create_track", () => {
     coreManager.newTrack();
@@ -20,25 +32,6 @@ export function init(coreManager: CoreManager) {
   evtsUI.on("create_section", ({ trackId }) => {
     coreManager.newSection(trackId);
 
-    evtsCore.emit("update_sections", null);
+    evtsCore.emit("update_track", { id: trackId });
   });
-
-  //
-  function getMsgTracks(): HandlerCoreTrack[] {
-    return [...coreManager.tracks.entries()].map(([trackId, track]) => ({
-      id: trackId,
-      name: track.name,
-      sections: [...coreManager.sections.keys()],
-    }));
-  }
-
-  function getMsgSections(trackId: number): HandlerCoreSection[] {
-    return [...coreManager.sections.entries()]
-      .filter(([_, section]) => section.trackId === trackId)
-      .map(([sectionId, section]) => ({
-        id: sectionId,
-        start: section.start,
-        end: section.end,
-      }));
-  }
 }

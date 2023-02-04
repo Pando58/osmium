@@ -3,18 +3,20 @@ import { eventHandler } from "@/communication/eventHandler";
 
 export const evtsCore = eventHandler<{
   update_tracks: null;
-  update_sections: null;
+  update_track: { id: number };
+  update_section: { id: number };
 }>();
 
 export const cmdsCore = commandHandler<{
-  tracks: [null, HandlerCoreTrack[]];
-  sections: [{ trackId: number }, HandlerCoreSection[]];
+  track_ids: [null, number[]];
+  track: [{ id: number }, HandlerCoreTrack];
+  section: [{ id: number }, HandlerCoreSection];
 }>();
 
 export type HandlerCoreTrack = {
   id: number;
+  sectionIds: number[];
   name: string;
-  sections: number[];
 };
 
 export type HandlerCoreSection = {

@@ -1,5 +1,4 @@
 export class Section {
-  trackId: number | null = null;
   start: number;
   end: number;
 

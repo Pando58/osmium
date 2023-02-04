@@ -21,7 +21,9 @@ export class CoreManager {
   }
 
   newSection(trackId: number) {
-    if (!this.tracks.has(trackId)) {
+    const track = this.tracks.get(trackId);
+
+    if (!track) {
       console.error(`Track with id '${trackId}' does not exist`);
       return;
     }
@@ -29,7 +31,7 @@ export class CoreManager {
     const sectionId = getNextId(this.sections);
     const section = new Section();
 
-    section.trackId = trackId;
+    track.sectionIds = [...track.sectionIds, sectionId];
 
     this.sections.set(sectionId, section);
   }
