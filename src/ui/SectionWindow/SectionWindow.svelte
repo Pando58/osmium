@@ -77,7 +77,7 @@
     </div>
     <div class="relative flex-1 bg-zinc-800">
       {#if selectedTab}
-        <div class="absolute inset-2">
+        <div class="absolute inset-2 overflow-hidden">
           <svelte:component
             this={selectedTab.component}
             winData={selectedTab.data || {}}
