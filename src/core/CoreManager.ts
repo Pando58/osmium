@@ -35,4 +35,15 @@ export class CoreManager {
 
     this.sections.set(sectionId, section);
   }
+
+  getSection(sectionId: number) {
+    const section = this.sections.get(sectionId);
+
+    if (!section) {
+      console.error(`Section with id '${sectionId}' does not exist`);
+      return null;
+    }
+
+    return section;
+  }
 }

@@ -4,7 +4,9 @@
     evtsCore,
     type HandlerCoreSection,
   } from "@/core/communication/handlers";
-  import { onDestroy } from "svelte";
+  import { appKey, type AppContext } from "@/ui/appContext";
+  import WindowSectionEditMenu from "@/ui/WindowSectionEditMenu/WindowSectionEditMenu.svelte";
+  import { getContext, onDestroy } from "svelte";
 
   export let id: number;
 
@@ -22,11 +24,33 @@
 
   updateSection();
 
-  evtsCore.on("update_track", updateSection);
+  evtsCore.on("update_section", updateSection);
 
   onDestroy(() => {
-    evtsCore.unsub("update_track", updateSection);
+    evtsCore.unsub("update_section", updateSection);
   });
+
+  //
+
+  const { createWindow } = getContext<AppContext>(appKey);
+
+  function openEditMenu() {
+    createWindow({
+      floating: true,
+      pos: "center",
+      w: 200,
+      h: 300,
+      tabs: [
+        {
+          name: "Section properties",
+          component: WindowSectionEditMenu,
+          data: {
+            sectionId: id,
+          },
+        },
+      ],
+    });
+  }
 </script>
 
 {#if section}
@@ -34,5 +58,6 @@
     class="debug absolute inset-y-0"
     style:left={section.start + "px"}
     style:width={section.end - section.start + "px"}
+    on:dblclick={openEditMenu}
   />
 {/if}

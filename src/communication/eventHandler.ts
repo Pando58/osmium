@@ -3,7 +3,7 @@ type EventMap = Record<string, any>;
 type EventKey<T extends EventMap> = string & keyof T;
 type EventReceiver<T> = (data: T) => void;
 
-interface EventHandler<T extends EventMap> {
+export interface EventHandler<T extends EventMap> {
   on<K extends EventKey<T>>(evt: K, fn: EventReceiver<T[K]>): void;
   unsub<K extends EventKey<T>>(evt: K, fn: EventReceiver<T[K]>): void;
   emit<K extends EventKey<T>>(evt: K, data: T[K]): void;

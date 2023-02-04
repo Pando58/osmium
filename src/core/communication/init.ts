@@ -34,4 +34,15 @@ export function init(coreManager: CoreManager) {
 
     evtsCore.emit("update_track", { id: trackId });
   });
+
+  evtsUI.on("update_section", ({ sectionId, props }) => {
+    const section = coreManager.getSection(sectionId);
+
+    if (!section) return;
+
+    if ("start" in props) section.start = props.start!;
+    if ("end" in props) section.end = props.end!;
+
+    evtsCore.emit("update_section", { id: sectionId });
+  });
 }
