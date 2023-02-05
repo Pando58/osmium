@@ -9,6 +9,9 @@
   import { evtsUI } from "../communication/handlers";
   import type { EventHandlerMessages } from "../misc/EventHandlerMessages";
 
+  export let winName: string;
+  winName = "Section properties";
+
   export let winData;
 
   const winDataSchema = z.object({ sectionId: z.number() });

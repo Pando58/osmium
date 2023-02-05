@@ -8,7 +8,6 @@ export type WindowConfig = {
   w: number;
   h: number;
   tabs: {
-    name: string;
     component: ComponentType<SvelteComponentTyped>;
     data?: Record<string, any>;
   }[];

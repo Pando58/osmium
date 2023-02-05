@@ -21,13 +21,7 @@
           w: 600,
           h: 600,
           tabs: new Map([
-            [
-              0,
-              {
-                name: "Tracks",
-                component: WindowTracks,
-              },
-            ],
+            [0, { component: WindowTracks }], //
           ]),
         },
       ],
@@ -40,13 +34,7 @@
           w: 600,
           h: 600,
           tabs: new Map([
-            [
-              0,
-              {
-                name: "Tracks",
-                component: WindowTracks,
-              },
-            ],
+            [0, { component: WindowTracks }], //
           ]),
         },
       ],

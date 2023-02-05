@@ -10,7 +10,6 @@ export interface SecWindow {
 }
 
 export type TabProps = {
-  name: string;
   component: ComponentType<SvelteComponentTyped>;
   data?: Record<string, any>;
 };

@@ -4,6 +4,9 @@
   import { onDestroy } from "svelte";
   import Track from "./Track.svelte";
 
+  export let winName: string; // doesn't work using const
+  winName = "Tracks";
+
   let trackIds: number[] = [];
 
   //

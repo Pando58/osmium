@@ -42,7 +42,6 @@
       h: 300,
       tabs: [
         {
-          name: "Section properties",
           component: WindowSectionEditMenu,
           data: {
             sectionId: id,

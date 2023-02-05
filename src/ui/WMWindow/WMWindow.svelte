@@ -13,9 +13,11 @@
 
   export let tabs: Map<number, TabProps>;
 
-  let selectedTabId = 0;
+  let tabNames: Record<number, string> = Object.fromEntries(
+    [...tabs.keys()].map((k) => [k, "unnamed tab"])
+  );
 
-  $: selectedTab = tabs.get(selectedTabId);
+  let selectedTabId = 0;
 
   //
   const dispatch = createEventDispatcher();
@@ -28,7 +30,9 @@
     });
   }
 
-  function onPointerDownTab(e: PointerEvent) {
+  function onPointerDownTab(e: PointerEvent, id: number) {
+    selectedTabId = id;
+
     e.stopPropagation();
   }
 
@@ -55,12 +59,13 @@
   >
     <div class="flex h-6 justify-between" on:pointerdown={onPointerDownTabBar}>
       <div class="flex gap-0.5 pl-1 pt-1">
-        {#each [...tabs.entries()] as [_tabId, tab]}
+        {#each Object.entries(tabNames) as [id, name]}
           <div
-            class="flex items-center bg-zinc-800 px-1"
-            on:pointerdown={onPointerDownTab}
+            class="flex items-center px-1"
+            class:bg-zinc-800={selectedTabId === +id}
+            on:pointerdown={(e) => onPointerDownTab(e, +id)}
           >
-            <span class="text-xs">{tab.name}</span>
+            <span class="text-xs">{name}</span>
           </div>
         {/each}
       </div>
@@ -76,14 +81,20 @@
       </button>
     </div>
     <div class="relative flex-1 bg-zinc-800">
-      {#if selectedTab}
-        <div class="absolute inset-2 overflow-hidden">
-          <svelte:component
-            this={selectedTab.component}
-            winData={selectedTab.data || {}}
-          />
-        </div>
-      {/if}
+      <div class="absolute inset-2 overflow-hidden">
+        {#each [...tabs.entries()] as [tabId, tab]}
+          <div class:hidden={selectedTabId !== tabId}>
+            <svelte:component
+              this={tab.component}
+              winData={{
+                active: selectedTabId === tabId,
+                ...(tab.data || {}),
+              }}
+              bind:winName={tabNames[tabId]}
+            />
+          </div>
+        {/each}
+      </div>
     </div>
   </div>
 </section>
