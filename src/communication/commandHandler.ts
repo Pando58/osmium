@@ -1,7 +1,9 @@
+import type { Result } from "@/misc/Result";
+
 type CommandMap = Record<string, [any, any]>;
 
 type CommandKey<T extends CommandMap> = string & keyof T;
-type CommandReceiver<Req, Res> = (data: Req) => Res;
+type CommandReceiver<Req, Res> = (data: Req) => Result<Res, string>;
 
 interface CommandHandler<T extends CommandMap> {
   take<K extends CommandKey<T>>(
@@ -17,7 +19,7 @@ interface CommandHandler<T extends CommandMap> {
 
 export function commandHandler<T extends CommandMap>(): CommandHandler<T> {
   const handlers: {
-    [K in keyof T]?: (data: T[K][0]) => void;
+    [K in keyof T]?: CommandReceiver<T[K][0], T[K][1]>;
   } = {};
 
   return {
@@ -44,7 +46,14 @@ export function commandHandler<T extends CommandMap>(): CommandHandler<T> {
           return;
         }
 
-        resolve((handlers[key] as (data: T[keyof T][0]) => void)(data));
+        const res = handlers[key]!(data);
+
+        if (!res.ok) {
+          reject(res.error);
+          return;
+        }
+
+        resolve(res.value);
       });
     },
   };

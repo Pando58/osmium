@@ -1,26 +1,44 @@
+import { Err, Ok, type Result } from "@/misc/Result";
 import { evtsUI } from "@/ui/communication/handlers";
 import type { CoreManager } from "../CoreManager";
-import { cmdsCore, evtsCore } from "./handlers";
+import {
+  cmdsCore,
+  evtsCore,
+  type HandlerCoreSection,
+  type HandlerCoreTrack,
+} from "./handlers";
 
 export function init(coreManager: CoreManager) {
-  cmdsCore.take("track_ids", () => [...coreManager.tracks.keys()]);
-  cmdsCore.take("track", ({ id }) => {
-    const { sectionIds, name } = coreManager.tracks.get(id)!;
-
-    return {
-      id,
-      sectionIds,
-      name,
-    };
+  cmdsCore.take("track_ids", () => {
+    return Ok([...coreManager.tracks.keys()]);
   });
-  cmdsCore.take("section", ({ id }) => {
-    const { position, length } = coreManager.sections.get(id)!;
 
-    return {
+  cmdsCore.take("track", ({ id }): Result<HandlerCoreTrack, string> => {
+    const track = coreManager.getTrack(id);
+
+    if (!track.ok) return Err(track.error);
+
+    const { sectionIds, name } = track.value;
+
+    return Ok({
+      id,
+      sectionIds: [...sectionIds],
+      name,
+    });
+  });
+
+  cmdsCore.take("section", ({ id }): Result<HandlerCoreSection, string> => {
+    const section = coreManager.getSection(id);
+
+    if (!section.ok) return Err(section.error);
+
+    const { position, length } = section.value;
+
+    return Ok({
       id,
       position,
       length,
-    };
+    });
   });
 
   evtsUI.on("create_track", () => {
@@ -38,10 +56,13 @@ export function init(coreManager: CoreManager) {
   evtsUI.on("update_section", ({ sectionId, props }) => {
     const section = coreManager.getSection(sectionId);
 
-    if (!section) return;
+    if (!section.ok) {
+      console.error(section.error);
+      return;
+    }
 
-    if ("position" in props) section.position = props.position!;
-    if ("length" in props) section.length = props.length!;
+    if ("position" in props) section.value.position = props.position!;
+    if ("length" in props) section.value.length = props.length!;
 
     evtsCore.emit("update_section", { id: sectionId });
   });

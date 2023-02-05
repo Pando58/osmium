@@ -1,4 +1,5 @@
 import { getNextId } from "@/misc/getNextId";
+import { Err, Ok, type Result } from "@/misc/Result";
 import { Section } from "./classes/Section";
 import { Track } from "./classes/Track";
 
@@ -12,38 +13,48 @@ export class CoreManager {
   }
 
   newTrack() {
-    const trackId = getNextId(this.tracks);
+    const id = getNextId(this.tracks);
     const track = new Track();
 
-    track.name = "Track " + trackId;
+    track.name = "Track " + id;
 
-    this.tracks.set(trackId, track);
+    this.tracks.set(id, track);
   }
 
-  newSection(trackId: number) {
+  getTrack(id: number): Result<Track, string> {
+    const track = this.tracks.get(id);
+
+    if (!track) {
+      return Err(`Track with id ${id} does not exist`);
+    }
+
+    return Ok(track);
+  }
+
+  newSection(trackId: number): Result<unknown, string> {
     const track = this.tracks.get(trackId);
 
     if (!track) {
-      console.error(`Track with id '${trackId}' does not exist`);
-      return;
+      return Err(`Track with id ${trackId} does not exist`);
     }
 
-    const sectionId = getNextId(this.sections);
+    const id = getNextId(this.sections);
     const section = new Section();
 
-    track.sectionIds = [...track.sectionIds, sectionId];
+    track.sectionIds = [...track.sectionIds, id];
 
-    this.sections.set(sectionId, section);
+    this.sections.set(id, section);
+
+    return Ok(null);
   }
 
-  getSection(sectionId: number) {
-    const section = this.sections.get(sectionId);
+  getSection(id: number): Result<Section, string> {
+    const section = this.sections.get(id);
 
     if (!section) {
-      console.error(`Section with id '${sectionId}' does not exist`);
-      return null;
+      return Err(`Section with id ${id} does not exist`);
     }
 
-    return section;
+    return Ok(section);
   }
 }
