@@ -3,6 +3,7 @@ import { evtsUI } from "@/ui/communication/handlers";
 import type { CoreManager } from "../CoreManager";
 import {
   cmdsCore,
+  evtsCore,
   type HandlerCoreGraph,
   type HandlerCoreNode,
   type HandlerCoreSection,
@@ -84,9 +85,14 @@ export function init(coreManager: CoreManager) {
   });
 
   evtsUI.on("update_section", ({ sectionId, props }) => {
-    const result = coreManager.updateSection(sectionId, props);
+    const section = coreManager.getSection(sectionId);
 
-    if (!result.ok) return console.error(result.error);
+    if (!section.ok) return console.error(section.error);
+
+    if ("position" in props) section.value.position = props.position!;
+    if ("length" in props) section.value.length = props.length!;
+
+    evtsCore.emit("update_section", { id: sectionId });
   });
 
   evtsUI.on("create_graph", () => {

@@ -6,10 +6,7 @@ import type { GraphNode } from "./classes/GraphNode";
 import { TestNode } from "./classes/nodes/TestNode";
 import { Section } from "./classes/Section";
 import { Track } from "./classes/Track";
-import type {
-  CoreEventMap,
-  HandlerCoreSection,
-} from "./communication/handlers";
+import type { CoreEventMap } from "./communication/handlers";
 
 export class CoreManager {
   evtsCore: EventHandler<CoreEventMap>;
@@ -75,22 +72,6 @@ export class CoreManager {
     }
 
     return Ok(section);
-  }
-
-  updateSection(
-    id: number,
-    props: Partial<Omit<HandlerCoreSection, "id">>
-  ): Result<null, string> {
-    const sectionResult = this.getSection(id);
-
-    if (!sectionResult.ok) return Err(sectionResult.error);
-
-    if ("position" in props) sectionResult.value.position = props.position!;
-    if ("length" in props) sectionResult.value.length = props.length!;
-
-    this.evtsCore.emit("update_section", { id });
-
-    return Ok(null);
   }
 
   newGraph() {
