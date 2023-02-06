@@ -7,6 +7,7 @@ export type CoreEventMap = {
   update_section: { id: number };
   update_graphs: null;
   update_graph: { id: number };
+  update_node: { id: number };
 };
 
 type CoreCommandMap = {
@@ -15,6 +16,7 @@ type CoreCommandMap = {
   section: [{ id: number }, HandlerCoreSection];
   graph_ids: [null, number[]];
   graph: [{ id: number }, HandlerCoreGraph];
+  node: [{ id: number }, HandlerCoreNode];
 };
 
 export type HandlerCoreTrack = {
@@ -31,7 +33,15 @@ export type HandlerCoreSection = {
 
 export type HandlerCoreGraph = {
   id: number;
+  nodeIds: number[];
   name: string;
+};
+
+export type HandlerCoreNode = {
+  id: number;
+  name: string;
+  x: number;
+  y: number;
 };
 
 export const evtsCore = eventHandler<CoreEventMap>();

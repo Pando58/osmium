@@ -4,6 +4,7 @@ import type { CoreManager } from "../CoreManager";
 import {
   cmdsCore,
   type HandlerCoreGraph,
+  type HandlerCoreNode,
   type HandlerCoreSection,
   type HandlerCoreTrack,
 } from "./handlers";
@@ -50,11 +51,27 @@ export function init(coreManager: CoreManager) {
 
     if (!graph.ok) return Err(graph.error);
 
-    const { name } = graph.value;
+    const { nodeIds, name } = graph.value;
+
+    return Ok({
+      id,
+      nodeIds: [...nodeIds],
+      name,
+    });
+  });
+
+  cmdsCore.take("node", ({ id }): Result<HandlerCoreNode, string> => {
+    const node = coreManager.getNode(id);
+
+    if (!node.ok) return Err(node.error);
+
+    const { name, x, y } = node.value;
 
     return Ok({
       id,
       name,
+      x,
+      y,
     });
   });
 

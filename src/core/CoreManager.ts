@@ -2,6 +2,8 @@ import type { EventHandler } from "@/communication/eventHandler";
 import { getNextId } from "@/misc/getNextId";
 import { Err, Ok, type Result } from "@/misc/Result";
 import { Graph } from "./classes/Graph";
+import type { GraphNode } from "./classes/GraphNode";
+import { TestNode } from "./classes/nodes/TestNode";
 import { Section } from "./classes/Section";
 import { Track } from "./classes/Track";
 import type {
@@ -10,10 +12,11 @@ import type {
 } from "./communication/handlers";
 
 export class CoreManager {
+  evtsCore: EventHandler<CoreEventMap>;
   tracks: Map<number, Track>;
   sections: Map<number, Section>;
   graphs: Map<number, Graph>;
-  evtsCore: EventHandler<CoreEventMap>;
+  nodes: Map<number, GraphNode>;
 
   constructor(evtsCore: EventHandler<CoreEventMap>) {
     this.evtsCore = evtsCore;
@@ -21,6 +24,7 @@ export class CoreManager {
     this.tracks = new Map();
     this.sections = new Map();
     this.graphs = new Map();
+    this.nodes = new Map();
   }
 
   newTrack() {
@@ -79,7 +83,7 @@ export class CoreManager {
   ): Result<null, string> {
     const sectionResult = this.getSection(id);
 
-    if (!sectionResult.ok) return sectionResult;
+    if (!sectionResult.ok) return Err(sectionResult.error);
 
     if ("position" in props) sectionResult.value.position = props.position!;
     if ("length" in props) sectionResult.value.length = props.length!;
@@ -91,16 +95,18 @@ export class CoreManager {
 
   newGraph() {
     const id = getNextId(this.graphs);
-    const graph = new Graph();
+    const graph = new Graph(id, this);
 
     graph.name = "Graph " + id;
 
     this.graphs.set(id, graph);
 
     this.evtsCore.emit("update_graphs", null);
+
+    graph.init();
   }
 
-  getGraph(id: number) {
+  getGraph(id: number): Result<Graph, string> {
     const graph = this.graphs.get(id);
 
     if (!graph) {
@@ -108,5 +114,34 @@ export class CoreManager {
     }
 
     return Ok(graph);
+  }
+
+  newNode(graphId: number): Result<GraphNode, string> {
+    const graph = this.graphs.get(graphId);
+
+    if (!graph) {
+      return Err(`Graph with id ${graphId} does not exist`);
+    }
+
+    const id = getNextId(this.nodes);
+    const node = new TestNode(id);
+
+    graph.nodeIds = [...graph.nodeIds, id];
+
+    this.nodes.set(id, node);
+
+    this.evtsCore.emit("update_graph", { id: graphId });
+
+    return Ok(node);
+  }
+
+  getNode(id: number): Result<GraphNode, string> {
+    const node = this.nodes.get(id);
+
+    if (!node) {
+      return Err(`Node with id ${id} does not exist`);
+    }
+
+    return Ok(node);
   }
 }

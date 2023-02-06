@@ -5,6 +5,7 @@
     type HandlerCoreGraph,
   } from "@/core/communication/handlers";
   import { onDestroy } from "svelte";
+  import GraphNode from "./GraphNode/GraphNode.svelte";
 
   export let graphId: number | null;
 
@@ -25,11 +26,8 @@
     });
   }
 
-  updateGraph();
-
   $: {
     graphId;
-
     updateGraph();
   }
 
@@ -41,23 +39,26 @@
 </script>
 
 <div
-  class="h-full"
+  class="relative h-full"
+  style:font-size="20px"
   style={`
-        background:
-          linear-gradient(to right, #0002 2px, transparent 1px),
-          linear-gradient(to bottom, #0002 2px, transparent 1px),
-          linear-gradient(to right, #0001 2px, transparent 1px),
-          linear-gradient(to bottom, #0001 2px, transparent 1px),
-          rgb(32, 32, 34);
-        background-size:
-          100px 100px,
-          100px 100px,
-          20px 20px,
-          20px 20px;
-        background-position: -10px -10px;
-      `}
+    background:
+      linear-gradient(to right, #0002 2px, transparent 1px),
+      linear-gradient(to bottom, #0002 2px, transparent 1px),
+      linear-gradient(to right, #0001 2px, transparent 1px),
+      linear-gradient(to bottom, #0001 2px, transparent 1px),
+      rgb(32, 32, 34);
+    background-size:
+      5em 5em,
+      5em 5em,
+      1em 1em,
+      1em 1em;
+    background-position: 0em 0em;
+  `}
 >
   {#if graph}
-    {graph.name}
+    {#each graph.nodeIds as id}
+      <GraphNode {id} />
+    {/each}
   {/if}
 </div>
