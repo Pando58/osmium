@@ -1,15 +1,23 @@
+import type { EventHandler } from "@/communication/eventHandler";
 import { getNextId } from "@/misc/getNextId";
 import { Err, Ok, type Result } from "@/misc/Result";
 import { Graph } from "./classes/Graph";
 import { Section } from "./classes/Section";
 import { Track } from "./classes/Track";
+import type {
+  CoreEventMap,
+  HandlerCoreSection,
+} from "./communication/handlers";
 
 export class CoreManager {
   tracks: Map<number, Track>;
   sections: Map<number, Section>;
   graphs: Map<number, Graph>;
+  evtsCore: EventHandler<CoreEventMap>;
 
-  constructor() {
+  constructor(evtsCore: EventHandler<CoreEventMap>) {
+    this.evtsCore = evtsCore;
+
     this.tracks = new Map();
     this.sections = new Map();
     this.graphs = new Map();
@@ -22,6 +30,8 @@ export class CoreManager {
     track.name = "Track " + id;
 
     this.tracks.set(id, track);
+
+    this.evtsCore.emit("update_tracks", null);
   }
 
   getTrack(id: number): Result<Track, string> {
@@ -34,7 +44,7 @@ export class CoreManager {
     return Ok(track);
   }
 
-  newSection(trackId: number): Result<unknown, string> {
+  newSection(trackId: number): Result<null, string> {
     const track = this.tracks.get(trackId);
 
     if (!track) {
@@ -47,6 +57,8 @@ export class CoreManager {
     track.sectionIds = [...track.sectionIds, id];
 
     this.sections.set(id, section);
+
+    this.evtsCore.emit("update_track", { id: trackId });
 
     return Ok(null);
   }
@@ -61,6 +73,22 @@ export class CoreManager {
     return Ok(section);
   }
 
+  updateSection(
+    id: number,
+    props: Partial<Omit<HandlerCoreSection, "id">>
+  ): Result<null, string> {
+    const sectionResult = this.getSection(id);
+
+    if (!sectionResult.ok) return sectionResult;
+
+    if ("position" in props) sectionResult.value.position = props.position!;
+    if ("length" in props) sectionResult.value.length = props.length!;
+
+    this.evtsCore.emit("update_section", { id });
+
+    return Ok(null);
+  }
+
   newGraph() {
     const id = getNextId(this.graphs);
     const graph = new Graph();
@@ -68,6 +96,8 @@ export class CoreManager {
     graph.name = "Graph " + id;
 
     this.graphs.set(id, graph);
+
+    this.evtsCore.emit("update_graphs", null);
   }
 
   getGraph(id: number) {
