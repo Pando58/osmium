@@ -81,7 +81,7 @@
       </button>
     </div>
     <div class="relative flex-1 bg-zinc-800">
-      <div class="absolute inset-2 overflow-hidden">
+      <div class="absolute inset-0 overflow-hidden">
         {#each [...tabs.entries()] as [tabId, tab]}
           <div class:hidden={selectedTabId !== tabId}>
             <svelte:component

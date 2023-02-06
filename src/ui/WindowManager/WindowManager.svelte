@@ -3,6 +3,7 @@
   import { writable, type Writable } from "svelte/store";
   import { appKey, type AppContext } from "../appContext";
   import WindowContainer from "../WindowContainer/WindowContainer.svelte";
+  import WindowGraph from "../WindowGraph/WindowGraph.svelte";
   import WindowTracks from "../WindowTracks/WindowTracks.svelte";
   import { createWindowHandler } from "./createWindowHandler";
   import { pointerHandling } from "./pointerHandling";
@@ -22,6 +23,7 @@
           h: 600,
           tabs: new Map([
             [0, { component: WindowTracks }], //
+            [1, { component: WindowGraph }],
           ]),
         },
       ],
@@ -29,12 +31,13 @@
         1,
         {
           floating: false,
-          x: 700,
+          x: 20,
           y: 20,
           w: 600,
           h: 600,
           tabs: new Map([
-            [0, { component: WindowTracks }], //
+            [0, { component: WindowGraph }], //
+            [1, { component: WindowTracks }],
           ]),
         },
       ],

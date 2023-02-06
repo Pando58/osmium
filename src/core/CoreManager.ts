@@ -1,15 +1,18 @@
 import { getNextId } from "@/misc/getNextId";
 import { Err, Ok, type Result } from "@/misc/Result";
+import { Graph } from "./classes/Graph";
 import { Section } from "./classes/Section";
 import { Track } from "./classes/Track";
 
 export class CoreManager {
   tracks: Map<number, Track>;
   sections: Map<number, Section>;
+  graphs: Map<number, Graph>;
 
   constructor() {
     this.tracks = new Map();
     this.sections = new Map();
+    this.graphs = new Map();
   }
 
   newTrack() {
@@ -56,5 +59,24 @@ export class CoreManager {
     }
 
     return Ok(section);
+  }
+
+  newGraph() {
+    const id = getNextId(this.graphs);
+    const graph = new Graph();
+
+    graph.name = "Graph " + id;
+
+    this.graphs.set(id, graph);
+  }
+
+  getGraph(id: number) {
+    const graph = this.graphs.get(id);
+
+    if (!graph) {
+      return Err(`Graph with id ${id} does not exist`);
+    }
+
+    return Ok(graph);
   }
 }

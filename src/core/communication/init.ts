@@ -4,6 +4,7 @@ import type { CoreManager } from "../CoreManager";
 import {
   cmdsCore,
   evtsCore,
+  type HandlerCoreGraph,
   type HandlerCoreSection,
   type HandlerCoreTrack,
 } from "./handlers";
@@ -38,6 +39,23 @@ export function init(coreManager: CoreManager) {
       id,
       position,
       length,
+    });
+  });
+
+  cmdsCore.take("graph_ids", () => {
+    return Ok([...coreManager.graphs.keys()]);
+  });
+
+  cmdsCore.take("graph", ({ id }): Result<HandlerCoreGraph, string> => {
+    const graph = coreManager.getGraph(id);
+
+    if (!graph.ok) return Err(graph.error);
+
+    const { name } = graph.value;
+
+    return Ok({
+      id,
+      name,
     });
   });
 
