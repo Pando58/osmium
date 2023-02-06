@@ -1,5 +1,6 @@
 <script lang="ts">
   import { cmdsCore, evtsCore } from "@/core/communication/handlers";
+  import { evtsUI } from "@/ui/communication/handlers";
   import { onDestroy } from "svelte";
   import GraphSelectOption from "./GraphSelectOption.svelte";
 
@@ -38,6 +39,7 @@
   </select>
   <button
     class="w-6 border border-l-0 border-zinc-700 bg-zinc-600 text-xs font-bold"
+    on:click={() => evtsUI.emit("create_graph", null)}
   >
     +
   </button>

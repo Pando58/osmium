@@ -84,4 +84,10 @@ export function init(coreManager: CoreManager) {
 
     evtsCore.emit("update_section", { id: sectionId });
   });
+
+  evtsUI.on("create_graph", () => {
+    coreManager.newGraph();
+
+    evtsCore.emit("update_graphs", null);
+  });
 }

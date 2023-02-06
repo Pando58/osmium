@@ -8,4 +8,5 @@ export const evtsUI = eventHandler<{
     sectionId: number;
     props: Partial<Omit<HandlerCoreSection, "id">>;
   };
+  create_graph: null;
 }>();
