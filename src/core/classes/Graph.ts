@@ -13,8 +13,12 @@ export class Graph {
   }
 
   init() {
-    const startNode = this.coreManager.newNode(this.id).unwrap() as GraphNode;
-    const outputNode = this.coreManager.newNode(this.id).unwrap() as GraphNode;
+    const startNode = this.coreManager
+      .newNode(this.id, "TestNode")
+      .unwrap() as GraphNode;
+    const outputNode = this.coreManager
+      .newNode(this.id, "TestNode")
+      .unwrap() as GraphNode;
 
     outputNode.x = 10;
 

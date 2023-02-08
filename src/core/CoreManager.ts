@@ -3,7 +3,10 @@ import { getNextId } from "@/misc/getNextId";
 import { Err, Ok, type Result } from "@/misc/Result";
 import { Graph } from "./classes/Graph";
 import type { GraphNode } from "./classes/GraphNode";
-import { TestNode } from "./classes/nodes/TestNode";
+import {
+  nodeFactories,
+  type NodeFactory,
+} from "./classes/nodes/factory/nodeFactories";
 import { Section } from "./classes/Section";
 import { Track } from "./classes/Track";
 import type { CoreEventMap } from "./communication/handlers";
@@ -97,7 +100,10 @@ export class CoreManager {
     return Ok(graph);
   }
 
-  newNode(graphId: number): Result<GraphNode, string> {
+  newNode(
+    graphId: number,
+    name: NodeFactory["name"]
+  ): Result<GraphNode, string> {
     const graph = this.graphs.get(graphId);
 
     if (!graph) {
@@ -105,7 +111,14 @@ export class CoreManager {
     }
 
     const id = getNextId(this.nodes);
-    const node = new TestNode(id);
+
+    const nodeFactory = nodeFactories.find((i) => i.name === name);
+
+    if (!nodeFactory) {
+      return Err(`Node factory "${name}" does not exist`);
+    }
+
+    const node = nodeFactory.create(id);
 
     graph.nodeIds = [...graph.nodeIds, id];
 
