@@ -118,7 +118,7 @@ export class CoreManager {
       return Err(`Node factory "${name}" does not exist`);
     }
 
-    const node = nodeFactory.create(id);
+    const node = nodeFactory.create();
 
     graph.nodeIds = [...graph.nodeIds, id];
 

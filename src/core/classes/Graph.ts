@@ -20,8 +20,7 @@ export class Graph {
       .newNode(this.id, "TestNode")
       .unwrap() as GraphNode;
 
-    outputNode.x = 10;
-
-    this.coreManager.evtsCore.emit("update_node", { id: outputNode.id });
+    // outputNode.x = 10;
+    // this.coreManager.evtsCore.emit("update_node", { id: outputNode.id });
   }
 }
