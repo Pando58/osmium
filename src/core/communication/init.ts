@@ -1,4 +1,4 @@
-import { Err, Ok, type Result } from "@/misc/Result";
+import { err, ok, type Result } from "@/misc/Result";
 import { evtsUI } from "@/ui/communication/handlers";
 import type { CoreManager } from "../CoreManager";
 import {
@@ -12,17 +12,17 @@ import {
 
 export function init(coreManager: CoreManager) {
   cmdsCore.take("track_ids", () => {
-    return Ok([...coreManager.tracks.keys()]);
+    return ok([...coreManager.tracks.keys()]);
   });
 
   cmdsCore.take("track", ({ id }): Result<HandlerCoreTrack, string> => {
     const track = coreManager.getTrack(id);
 
-    if (!track.ok) return Err(track.error);
+    if (!track.ok) return err(track.error);
 
     const { sectionIds, name } = track.value;
 
-    return Ok({
+    return ok({
       id,
       sectionIds: [...sectionIds],
       name,
@@ -32,11 +32,11 @@ export function init(coreManager: CoreManager) {
   cmdsCore.take("section", ({ id }): Result<HandlerCoreSection, string> => {
     const section = coreManager.getSection(id);
 
-    if (!section.ok) return Err(section.error);
+    if (!section.ok) return err(section.error);
 
     const { position, length } = section.value;
 
-    return Ok({
+    return ok({
       id,
       position,
       length,
@@ -44,17 +44,17 @@ export function init(coreManager: CoreManager) {
   });
 
   cmdsCore.take("graph_ids", () => {
-    return Ok([...coreManager.graphs.keys()]);
+    return ok([...coreManager.graphs.keys()]);
   });
 
   cmdsCore.take("graph", ({ id }): Result<HandlerCoreGraph, string> => {
     const graph = coreManager.getGraph(id);
 
-    if (!graph.ok) return Err(graph.error);
+    if (!graph.ok) return err(graph.error);
 
     const { nodeIds, name } = graph.value;
 
-    return Ok({
+    return ok({
       id,
       nodeIds: [...nodeIds],
       name,
@@ -64,11 +64,11 @@ export function init(coreManager: CoreManager) {
   cmdsCore.take("node", ({ id }): Result<HandlerCoreNode, string> => {
     const node = coreManager.getNode(id);
 
-    if (!node.ok) return Err(node.error);
+    if (!node.ok) return err(node.error);
 
     const { name, x, y } = node.value;
 
-    return Ok({
+    return ok({
       id,
       name,
       x,

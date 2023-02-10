@@ -1,6 +1,6 @@
 import type { EventHandler } from "@/communication/eventHandler";
 import { getNextId } from "@/misc/getNextId";
-import { Err, Ok, type Result } from "@/misc/Result";
+import { err, ok, type Result } from "@/misc/Result";
 import { Graph } from "./classes/Graph";
 import type { GraphNode } from "./classes/GraphNode";
 import {
@@ -42,17 +42,17 @@ export class CoreManager {
     const track = this.tracks.get(id);
 
     if (!track) {
-      return Err(`Track with id ${id} does not exist`);
+      return err(`Track with id ${id} does not exist`);
     }
 
-    return Ok(track);
+    return ok(track);
   }
 
   newSection(trackId: number): Result<null, string> {
     const track = this.tracks.get(trackId);
 
     if (!track) {
-      return Err(`Track with id ${trackId} does not exist`);
+      return err(`Track with id ${trackId} does not exist`);
     }
 
     const id = getNextId(this.sections);
@@ -64,17 +64,17 @@ export class CoreManager {
 
     this.evtsCore.emit("update_track", { id: trackId });
 
-    return Ok(null);
+    return ok(null);
   }
 
   getSection(id: number): Result<Section, string> {
     const section = this.sections.get(id);
 
     if (!section) {
-      return Err(`Section with id ${id} does not exist`);
+      return err(`Section with id ${id} does not exist`);
     }
 
-    return Ok(section);
+    return ok(section);
   }
 
   newGraph() {
@@ -94,10 +94,10 @@ export class CoreManager {
     const graph = this.graphs.get(id);
 
     if (!graph) {
-      return Err(`Graph with id ${id} does not exist`);
+      return err(`Graph with id ${id} does not exist`);
     }
 
-    return Ok(graph);
+    return ok(graph);
   }
 
   newNode(
@@ -107,7 +107,7 @@ export class CoreManager {
     const graph = this.graphs.get(graphId);
 
     if (!graph) {
-      return Err(`Graph with id ${graphId} does not exist`);
+      return err(`Graph with id ${graphId} does not exist`);
     }
 
     const id = getNextId(this.nodes);
@@ -115,7 +115,7 @@ export class CoreManager {
     const nodeFactory = nodeFactories.find((i) => i.name === name);
 
     if (!nodeFactory) {
-      return Err(`Node factory "${name}" does not exist`);
+      return err(`Node factory "${name}" does not exist`);
     }
 
     const node = nodeFactory.create();
@@ -126,16 +126,16 @@ export class CoreManager {
 
     this.evtsCore.emit("update_graph", { id: graphId });
 
-    return Ok(node);
+    return ok(node);
   }
 
   getNode(id: number): Result<GraphNode, string> {
     const node = this.nodes.get(id);
 
     if (!node) {
-      return Err(`Node with id ${id} does not exist`);
+      return err(`Node with id ${id} does not exist`);
     }
 
-    return Ok(node);
+    return ok(node);
   }
 }
