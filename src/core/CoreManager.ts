@@ -7,6 +7,11 @@ import {
   nodeFactories,
   type NodeFactory,
 } from "./classes/nodes/factory/nodeFactories";
+import { Pin } from "./classes/Pin";
+import type {
+  PinDataType,
+  PinIOType,
+} from "./classes/pinDataTypes/pinDataTypes";
 import { Section } from "./classes/Section";
 import { Track } from "./classes/Track";
 import type { CoreEventMap } from "./communication/handlers";
@@ -17,6 +22,7 @@ export class CoreManager {
   sections: Map<number, Section>;
   graphs: Map<number, Graph>;
   nodes: Map<number, GraphNode>;
+  pins: Map<number, Pin>;
 
   constructor(evtsCore: EventHandler<CoreEventMap>) {
     this.evtsCore = evtsCore;
@@ -25,6 +31,7 @@ export class CoreManager {
     this.sections = new Map();
     this.graphs = new Map();
     this.nodes = new Map();
+    this.pins = new Map();
   }
 
   newTrack() {
@@ -118,13 +125,15 @@ export class CoreManager {
       return err(`Node factory "${name}" does not exist`);
     }
 
-    const node = nodeFactory.create();
+    const node = nodeFactory.create(id, this);
 
     graph.nodeIds = [...graph.nodeIds, id];
 
     this.nodes.set(id, node);
 
     this.evtsCore.emit("update_graph", { id: graphId });
+
+    node.init();
 
     return ok(
       new Proxy(node, {
@@ -147,5 +156,39 @@ export class CoreManager {
     }
 
     return ok(node);
+  }
+
+  newPin<T extends PinDataType, U extends PinIOType>(
+    nodeId: number,
+    dataType: T,
+    ioType: U
+  ): Result<Pin<T, U>, string> {
+    const node = this.nodes.get(nodeId);
+
+    if (!node) {
+      return err(`Node with id ${nodeId} does not exist`);
+    }
+
+    const id = getNextId(this.pins);
+
+    const pin = new Pin(dataType, ioType);
+
+    node.pinIds = [...node.pinIds, id];
+
+    this.pins.set(id, pin);
+
+    this.evtsCore.emit("update_node", { id: nodeId });
+
+    return ok(
+      new Proxy(pin, {
+        set: (...args) => {
+          const r = Reflect.set(...args);
+
+          this.evtsCore.emit("update_node", { id: nodeId });
+
+          return r;
+        },
+      })
+    );
   }
 }
