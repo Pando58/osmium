@@ -5,6 +5,7 @@
     type HandlerCoreNode,
   } from "@/core/communication/handlers";
   import { onDestroy } from "svelte";
+  import Pin from "./Pin/Pin.svelte";
 
   export let id: number;
 
@@ -43,7 +44,9 @@
     <div
       class="min-h-[4rem] rounded-b-lg border border-t-0 border-black/60 bg-zinc-750 shadow-md shadow-black/30"
     >
-      <!--  -->
+      {#each node.pinIds as pinId}
+        <Pin id={pinId} nodeId={id} />
+      {/each}
     </div>
   </div>
 {/if}

@@ -191,4 +191,14 @@ export class CoreManager {
       })
     );
   }
+
+  getPin(id: number): Result<Pin, string> {
+    const pin = this.pins.get(id);
+
+    if (!pin) {
+      return err(`Pin with id ${id} does not exist`);
+    }
+
+    return ok(pin);
+  }
 }

@@ -6,6 +6,7 @@ import {
   evtsCore,
   type HandlerCoreGraph,
   type HandlerCoreNode,
+  type HandlerCorePin,
   type HandlerCoreSection,
   type HandlerCoreTrack,
 } from "./handlers";
@@ -66,13 +67,29 @@ export function init(coreManager: CoreManager) {
 
     if (!node.ok) return err(node.error);
 
-    const { name, x, y } = node.value;
+    const { pinIds, name, x, y } = node.value;
+
+    return ok({
+      id,
+      pinIds: [...pinIds],
+      name,
+      x,
+      y,
+    });
+  });
+
+  cmdsCore.take("pin", ({ id }): Result<HandlerCorePin, string> => {
+    const pin = coreManager.getPin(id);
+
+    if (!pin.ok) return err(pin.error);
+
+    const { name, dataType, ioType } = pin.value;
 
     return ok({
       id,
       name,
-      x,
-      y,
+      dataType,
+      ioType,
     });
   });
 
