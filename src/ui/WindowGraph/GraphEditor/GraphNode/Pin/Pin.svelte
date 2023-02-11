@@ -1,34 +1,8 @@
 <script lang="ts">
-  import {
-    cmdsCore,
-    evtsCore,
-    type HandlerCorePin,
-  } from "@/core/communication/handlers";
-  import { onDestroy } from "svelte";
+  import type { HandlerCorePin } from "@/core/communication/handlers";
   import PinSvg from "./PinSvg.svelte";
 
-  export let id: number;
-  export let nodeId: number;
-
-  let pin: HandlerCorePin | null = null;
-
-  //
-  async function updatePin(evt?: { id: number }) {
-    if (evt && evt.id !== nodeId) return;
-
-    pin = await cmdsCore.request("pin", { id }).catch((err) => {
-      console.error(err);
-      return pin;
-    });
-  }
-
-  updatePin();
-
-  evtsCore.on("update_node", updatePin);
-
-  onDestroy(() => {
-    evtsCore.unsub("update_node", updatePin);
-  });
+  export let pin: HandlerCorePin;
 </script>
 
 {#if pin}

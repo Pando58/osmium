@@ -7,3 +7,9 @@ export type PinDataTypes = {
 export type PinDataType = keyof PinDataTypes;
 
 export type PinIOType = "input" | "output";
+
+export const pinDataTypeNames: PinDataType[] = [
+  "execution",
+  "integer",
+  "boolean",
+];

@@ -5,7 +5,7 @@
     type HandlerCoreNode,
   } from "@/core/communication/handlers";
   import { onDestroy } from "svelte";
-  import Pin from "./Pin/Pin.svelte";
+  import SortPins from "./SortPins.svelte";
 
   export let id: number;
 
@@ -36,17 +36,16 @@
 {#if node}
   <div class="absolute" style:left={node.x + "em"} style:top={node.y + "em"}>
     <div
-      class="rounded-t-md border border-black/40 bg-zinc-800 shadow-md shadow-black/30"
-      style:padding="0.1em 0.3em"
+      class="flex rounded-t-md border border-black/40 bg-zinc-800 py-[0.1em] px-[0.3em] shadow-md shadow-black/30"
     >
-      <div style:font-size="0.65em">{node.name}</div>
+      <span class="text-[0.65em]">{node.name}</span>
     </div>
     <div
-      class="min-h-[4rem] rounded-b-lg border border-t-0 border-black/60 bg-zinc-750 shadow-md shadow-black/30"
+      class="min-h-[2em] rounded-b-lg border border-t-0 border-black/60 bg-zinc-750 p-[0.4em] shadow-md shadow-black/30"
     >
-      {#each node.pinIds as pinId}
-        <Pin id={pinId} nodeId={id} />
-      {/each}
+      <div class="flex flex-col gap-[0.2em]">
+        <SortPins pinIds={node.pinIds} nodeId={id} />
+      </div>
     </div>
   </div>
 {/if}
