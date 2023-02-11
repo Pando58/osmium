@@ -126,7 +126,17 @@ export class CoreManager {
 
     this.evtsCore.emit("update_graph", { id: graphId });
 
-    return ok(node);
+    return ok(
+      new Proxy(node, {
+        set: (...args) => {
+          const r = Reflect.set(...args);
+
+          this.evtsCore.emit("update_node", { id });
+
+          return r;
+        },
+      })
+    );
   }
 
   getNode(id: number): Result<GraphNode, string> {

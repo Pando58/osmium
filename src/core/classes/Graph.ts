@@ -1,5 +1,4 @@
 import type { CoreManager } from "../CoreManager";
-import type { GraphNode } from "./GraphNode";
 
 export class Graph {
   coreManager: CoreManager;
@@ -13,14 +12,9 @@ export class Graph {
   }
 
   init() {
-    const startNode = this.coreManager
-      .newNode(this.id, "TestNode")
-      .unwrap() as GraphNode;
-    const outputNode = this.coreManager
-      .newNode(this.id, "TestNode")
-      .unwrap() as GraphNode;
+    const startNode = this.coreManager.newNode(this.id, "TestNode").unwrap()!;
+    const outputNode = this.coreManager.newNode(this.id, "TestNode").unwrap()!;
 
-    // outputNode.x = 10;
-    // this.coreManager.evtsCore.emit("update_node", { id: outputNode.id });
+    outputNode.x = 10;
   }
 }
