@@ -116,4 +116,17 @@ export function init(coreManager: CoreManager) {
   evtsUI.on("create_graph", () => {
     coreManager.newGraph();
   });
+
+  evtsUI.on("move_node", ({ id, x, y }) => {
+    const result = coreManager.getNode(id);
+
+    if (!result.ok) return console.error(result.error);
+
+    const node = result.value;
+
+    node.x = x;
+    node.y = y;
+
+    // evtsCore.emit("update_node", { id });
+  });
 }

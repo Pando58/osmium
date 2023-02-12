@@ -83,6 +83,9 @@
       svgs = svgs;
     },
   });
+
+  //
+  let editorContainer: HTMLDivElement;
 </script>
 
 <div
@@ -102,12 +105,13 @@
       1em 1em;
     background-position: 0em 0em;
   `}
+  bind:this={editorContainer}
 >
   <div class="absolute h-[400%] w-[400%]">
     {#if graph}
-      <SvgLines {pinPairs} {svgs} />
+      <SvgLines {pinPairs} {svgs} nodeIds={graph.nodeIds} />
       {#each graph.nodeIds as id}
-        <GraphNode {id} />
+        <GraphNode {id} {editorContainer} />
       {/each}
     {/if}
   </div>

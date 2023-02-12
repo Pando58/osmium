@@ -155,7 +155,17 @@ export class CoreManager {
       return err(`Node with id ${id} does not exist`);
     }
 
-    return ok(node);
+    return ok(
+      new Proxy(node, {
+        set: (...args) => {
+          const r = Reflect.set(...args);
+
+          this.evtsCore.emit("update_node", { id });
+
+          return r;
+        },
+      })
+    );
   }
 
   newPin<T extends PinDataType, U extends PinIOType>(
@@ -199,6 +209,22 @@ export class CoreManager {
       return err(`Pin with id ${id} does not exist`);
     }
 
-    return ok(pin);
+    return ok(
+      new Proxy(pin, {
+        set: (...args) => {
+          const r = Reflect.set(...args);
+
+          const nodeId = [...this.nodes].find(([k, v]) =>
+            v.pinIds.includes(id)
+          );
+
+          if (nodeId !== undefined) {
+            this.evtsCore.emit("update_node", { id: nodeId[0] });
+          }
+
+          return r;
+        },
+      })
+    );
   }
 }

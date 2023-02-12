@@ -4,10 +4,12 @@
     evtsCore,
     type HandlerCoreNode,
   } from "@/core/communication/handlers";
+  import { evtsUI } from "@/ui/communication/handlers";
   import { onDestroy } from "svelte";
   import SortPins from "./SortPins.svelte";
 
   export let id: number;
+  export let editorContainer: HTMLDivElement;
 
   let node: HandlerCoreNode | null = null;
 
@@ -31,12 +33,52 @@
   onDestroy(() => {
     evtsCore.unsub("update_node", updateNode);
   });
+
+  //
+  let nodeContainer: HTMLDivElement;
+  let draggingOffset: [number, number] | null = null;
+
+  function onPointerDownTitle(e: PointerEvent) {
+    if (e.type === "pointerdown") {
+      const { left, top } = nodeContainer.getBoundingClientRect();
+      draggingOffset = [e.clientX - left, e.clientY - top];
+    } else {
+      draggingOffset = null;
+    }
+  }
+
+  addEventListener("pointerup", onPointerDownTitle);
+
+  function onPointerMove(e: PointerEvent) {
+    if (draggingOffset === null) return;
+
+    const { left, top } = editorContainer.getBoundingClientRect();
+
+    evtsUI.emit("move_node", {
+      id,
+      x: ~~(e.clientX - left - draggingOffset[0]) / 20,
+      y: ~~(e.clientY - top - draggingOffset[1]) / 20,
+    });
+  }
+
+  addEventListener("pointermove", onPointerMove);
+
+  onDestroy(() => {
+    removeEventListener("pointermove", onPointerMove);
+  });
 </script>
 
 {#if node}
-  <div class="absolute" style:left={node.x + "em"} style:top={node.y + "em"}>
+  <div
+    class="absolute"
+    style:left={node.x + "em"}
+    style:top={node.y + "em"}
+    bind:this={nodeContainer}
+  >
     <div
       class="flex rounded-t-md border border-black/40 bg-zinc-800/90 py-[0.1em] px-[0.3em] shadow-md shadow-black/30"
+      on:pointerdown={onPointerDownTitle}
+      on:pointerup={onPointerDownTitle}
     >
       <span class="text-[0.65em]">{node.name}</span>
     </div>

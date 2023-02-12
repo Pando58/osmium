@@ -9,4 +9,5 @@ export const evtsUI = eventHandler<{
     props: Partial<Omit<HandlerCoreSection, "id">>;
   };
   create_graph: null;
+  move_node: { id: number; x: number; y: number };
 }>();
