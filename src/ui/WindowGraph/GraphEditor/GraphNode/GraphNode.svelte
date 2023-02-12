@@ -36,12 +36,12 @@
 {#if node}
   <div class="absolute" style:left={node.x + "em"} style:top={node.y + "em"}>
     <div
-      class="flex rounded-t-md border border-black/40 bg-zinc-800 py-[0.1em] px-[0.3em] shadow-md shadow-black/30"
+      class="flex rounded-t-md border border-black/40 bg-zinc-800/90 py-[0.1em] px-[0.3em] shadow-md shadow-black/30"
     >
       <span class="text-[0.65em]">{node.name}</span>
     </div>
     <div
-      class="min-h-[2em] rounded-b-lg border border-t-0 border-black/60 bg-zinc-750 p-[0.4em] shadow-md shadow-black/30"
+      class="min-h-[2em] rounded-b-lg border border-t-0 border-black/60 bg-zinc-750/90 p-[0.4em] shadow-md shadow-black/30"
     >
       <div class="flex flex-col gap-[0.2em]">
         <SortPins pinIds={node.pinIds} nodeId={id} />

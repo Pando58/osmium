@@ -83,13 +83,14 @@ export function init(coreManager: CoreManager) {
 
     if (!pin.ok) return err(pin.error);
 
-    const { name, dataType, ioType } = pin.value;
+    const { name, dataType, ioType, connectedPin } = pin.value;
 
     return ok({
       id,
       name,
       dataType,
       ioType,
+      connectedPinId: connectedPin ? connectedPin.id : null,
     });
   });
 

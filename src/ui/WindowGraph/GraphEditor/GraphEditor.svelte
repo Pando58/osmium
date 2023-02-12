@@ -1,11 +1,23 @@
+<script context="module" lang="ts">
+  export const graphEditorKey = Symbol();
+
+  export interface GraphEditorContext {
+    registerPinPair(a: number, b: number): void;
+    clearPinPair(a: number, b: number): void;
+    registerSvg(id: number, svg: SVGElement): void;
+    clearSvg(id: number): void;
+  }
+</script>
+
 <script lang="ts">
   import {
     cmdsCore,
     evtsCore,
     type HandlerCoreGraph,
   } from "@/core/communication/handlers";
-  import { onDestroy } from "svelte";
+  import { onDestroy, setContext } from "svelte";
   import GraphNode from "./GraphNode/GraphNode.svelte";
+  import SvgLines from "./SvgLines/SvgLines.svelte";
 
   export let graphId: number | null;
 
@@ -36,6 +48,41 @@
   onDestroy(() => {
     evtsCore.unsub("update_graph", updateGraph);
   });
+
+  //
+  let svgs: Map<number, SVGElement> = new Map();
+  let pinPairs: [number, number][] = [];
+
+  setContext<GraphEditorContext>(graphEditorKey, {
+    registerPinPair(a: number, b: number) {
+      const index = pinPairs.findIndex(
+        ([u, v]) => (a === u && b === v) || (a === v && b === u)
+      );
+
+      if (index > -1) pinPairs.splice(index, 1);
+
+      pinPairs = [...pinPairs, [a, b]];
+    },
+    clearPinPair(a: number, b: number) {
+      const index = pinPairs.findIndex(
+        ([u, v]) => (a === u && b === v) || (a === v && b === u)
+      );
+
+      if (index > -1) pinPairs.splice(index, 1);
+
+      pinPairs = pinPairs;
+    },
+    registerSvg(id: number, svg: SVGElement) {
+      svgs.set(id, svg);
+
+      svgs = svgs;
+    },
+    clearSvg(id: number) {
+      svgs.delete(id);
+
+      svgs = svgs;
+    },
+  });
 </script>
 
 <div
@@ -57,6 +104,7 @@
   `}
 >
   {#if graph}
+    <SvgLines {pinPairs} {svgs} />
     {#each graph.nodeIds as id}
       <GraphNode {id} />
     {/each}

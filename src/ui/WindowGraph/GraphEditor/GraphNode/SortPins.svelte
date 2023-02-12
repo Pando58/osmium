@@ -1,11 +1,11 @@
 <script lang="ts">
   import { pinDataTypeNames } from "@/core/classes/pinDataTypes/pinDataTypes";
+  import { cmdsCore, type HandlerCorePin } from "@/core/communication/handlers";
+  import { getContext, onDestroy } from "svelte";
   import {
-    cmdsCore,
-    evtsCore,
-    type HandlerCorePin,
-  } from "@/core/communication/handlers";
-  import { onDestroy } from "svelte";
+    graphEditorKey,
+    type GraphEditorContext,
+  } from "../GraphEditor.svelte";
   import Pin from "./Pin/Pin.svelte";
 
   export let pinIds: number[];
@@ -44,10 +44,30 @@
     updatePins();
   }
 
-  evtsCore.on("update_node", updatePins);
+  //
+  const { registerPinPair, clearPinPair } =
+    getContext<GraphEditorContext>(graphEditorKey);
+
+  let pinPairs: [number, number][] = [];
+
+  $: {
+    const pairs: [number, number][] = [];
+
+    for (const pin of pins) {
+      if (pin.connectedPinId !== null) pairs.push([pin.id, pin.connectedPinId]);
+    }
+
+    for (const [a, b] of pairs) {
+      registerPinPair(a, b);
+    }
+
+    pinPairs = pairs;
+  }
 
   onDestroy(() => {
-    evtsCore.unsub("update_node", updatePins);
+    for (const [a, b] of pinPairs) {
+      clearPinPair(a, b);
+    }
   });
 </script>
 

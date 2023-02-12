@@ -55,6 +55,7 @@ export type HandlerCorePin = {
   name: string;
   dataType: PinDataType;
   ioType: PinIOType;
+  connectedPinId: number | null;
 };
 
 export const evtsCore = eventHandler<CoreEventMap>();
