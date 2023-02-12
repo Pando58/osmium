@@ -86,7 +86,7 @@
 </script>
 
 <div
-  class="relative h-full"
+  class="relative h-full overflow-hidden"
   style:font-size="20px"
   style={`
     background:
@@ -103,10 +103,12 @@
     background-position: 0em 0em;
   `}
 >
-  {#if graph}
-    <SvgLines {pinPairs} {svgs} />
-    {#each graph.nodeIds as id}
-      <GraphNode {id} />
-    {/each}
-  {/if}
+  <div class="absolute h-[400%] w-[400%]">
+    {#if graph}
+      <SvgLines {pinPairs} {svgs} />
+      {#each graph.nodeIds as id}
+        <GraphNode {id} />
+      {/each}
+    {/if}
+  </div>
 </div>
