@@ -10,4 +10,5 @@ export const evtsUI = eventHandler<{
   };
   create_graph: null;
   move_node: { id: number; x: number; y: number };
+  connect_pins: { id1: number; id2: number };
 }>();

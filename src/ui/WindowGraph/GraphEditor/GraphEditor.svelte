@@ -6,6 +6,8 @@
     clearPinPair(a: number, b: number): void;
     registerSvg(id: number, svg: SVGElement): void;
     clearSvg(id: number): void;
+    setPressPinId(id: number): void;
+    setReleasePinId(id: number): void;
   }
 </script>
 
@@ -15,6 +17,7 @@
     evtsCore,
     type HandlerCoreGraph,
   } from "@/core/communication/handlers";
+  import { evtsUI } from "@/ui/communication/handlers";
   import { onDestroy, setContext } from "svelte";
   import GraphNode from "./GraphNode/GraphNode.svelte";
   import SvgLines from "./SvgLines/SvgLines.svelte";
@@ -82,6 +85,31 @@
 
       svgs = svgs;
     },
+    setPressPinId(id: number) {
+      pressPinId = id;
+    },
+    setReleasePinId(id: number) {
+      releasePinId = id;
+    },
+  });
+
+  //
+  let pressPinId: number | null = null;
+  let releasePinId: number | null = null;
+
+  function pinReleasePointer() {
+    if (pressPinId !== null && releasePinId !== null) {
+      evtsUI.emit("connect_pins", { id1: pressPinId, id2: releasePinId });
+    }
+
+    pressPinId = null;
+    releasePinId = null;
+  }
+
+  addEventListener("pointerup", pinReleasePointer);
+
+  onDestroy(() => {
+    removeEventListener("pointerup", pinReleasePointer);
   });
 
   //
@@ -109,7 +137,7 @@
 >
   <div class="absolute h-[400%] w-[400%]">
     {#if graph}
-      <SvgLines {pinPairs} {svgs} nodeIds={graph.nodeIds} />
+      <SvgLines {pinPairs} {svgs} nodeIds={graph.nodeIds} {pressPinId} />
       {#each graph.nodeIds as id}
         <GraphNode {id} {editorContainer} />
       {/each}

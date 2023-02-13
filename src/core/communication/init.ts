@@ -129,4 +129,17 @@ export function init(coreManager: CoreManager) {
 
     // evtsCore.emit("update_node", { id });
   });
+
+  evtsUI.on("connect_pins", ({ id1, id2 }) => {
+    const result1 = coreManager.getPin(id1);
+    const result2 = coreManager.getPin(id2);
+
+    if (!result1.ok) return console.error(result1.error);
+    if (!result2.ok) return console.error(result2.error);
+
+    const pin1 = result1.value;
+    const pin2 = result2.value;
+
+    pin1.connect(pin2);
+  });
 }

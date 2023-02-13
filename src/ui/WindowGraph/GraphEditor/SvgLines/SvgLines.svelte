@@ -8,6 +8,8 @@
   export let svgs: Map<number, SVGElement>;
   export let nodeIds: number[];
 
+  export let pressPinId: number | null = null;
+
   let paths: [number, number, number, number][] = [];
 
   let containerSvg: SVGElement;
@@ -51,10 +53,52 @@
   onDestroy(() => {
     evtsCore.unsub("update_node", onUpdateNode);
   });
+
+  //
+  let pinDragCoords: [number, number, number, number] = [0, 0, 0, 0];
+
+  $: {
+    if (pressPinId !== null) {
+      const svg = svgs.get(pressPinId);
+
+      if (svg) {
+        const { left, top } = containerSvg.getBoundingClientRect();
+
+        const [x, y] = getElementCenter(svg);
+
+        pinDragCoords[0] = x - left;
+        pinDragCoords[1] = y - top;
+
+        pinDragCoords = pinDragCoords;
+      }
+    }
+  }
+
+  function pinDrag(e: PointerEvent) {
+    if (pressPinId === null) return;
+
+    const { left, top } = containerSvg.getBoundingClientRect();
+
+    pinDragCoords[2] = e.clientX - left;
+    pinDragCoords[3] = e.clientY - top;
+
+    pinDragCoords = pinDragCoords;
+  }
+
+  addEventListener("pointermove", pinDrag);
+  addEventListener("pointerdown", pinDrag);
+
+  onDestroy(() => {
+    removeEventListener("pointermove", pinDrag);
+    removeEventListener("pointerdown", pinDrag);
+  });
 </script>
 
 <svg class="absolute h-full w-full" bind:this={containerSvg}>
   {#each paths as coords}
     <Path {coords} />
   {/each}
+  {#if pressPinId !== null}
+    <Path coords={pinDragCoords} />
+  {/if}
 </svg>
