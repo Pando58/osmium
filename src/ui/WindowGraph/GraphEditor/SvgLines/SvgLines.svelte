@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { evtsCore } from "@/core/communication/handlers";
+  import { cmdsCore, evtsCore } from "@/core/communication/handlers";
   import { getElementCenter } from "@/ui/misc/getElementCenter";
   import { onDestroy } from "svelte";
   import Path from "./Path.svelte";
@@ -20,6 +20,7 @@
 
     if (containerSvg) {
       updatePaths();
+      setPressedPinIsOutput();
     }
   }
 
@@ -56,6 +57,22 @@
 
   //
   let pinDragCoords: [number, number, number, number] = [0, 0, 0, 0];
+  let pressedPinIsOutput = true;
+
+  async function setPressedPinIsOutput() {
+    if (pressPinId === null) return;
+
+    const pin = await cmdsCore
+      .request("pin", { id: pressPinId })
+      .catch((err) => {
+        console.error(err);
+        return null;
+      });
+
+    if (!pin) return;
+
+    pressedPinIsOutput = pin.ioType === "output";
+  }
 
   $: {
     if (pressPinId !== null) {
@@ -66,8 +83,8 @@
 
         const [x, y] = getElementCenter(svg);
 
-        pinDragCoords[0] = x - left;
-        pinDragCoords[1] = y - top;
+        pinDragCoords[pressedPinIsOutput ? 0 : 2] = x - left;
+        pinDragCoords[pressedPinIsOutput ? 1 : 3] = y - top;
 
         pinDragCoords = pinDragCoords;
       }
@@ -79,8 +96,8 @@
 
     const { left, top } = containerSvg.getBoundingClientRect();
 
-    pinDragCoords[2] = e.clientX - left;
-    pinDragCoords[3] = e.clientY - top;
+    pinDragCoords[pressedPinIsOutput ? 2 : 0] = e.clientX - left;
+    pinDragCoords[pressedPinIsOutput ? 3 : 1] = e.clientY - top;
 
     pinDragCoords = pinDragCoords;
   }

@@ -54,7 +54,12 @@
     const pairs: [number, number][] = [];
 
     for (const pin of pins) {
-      if (pin.connectedPinId !== null) pairs.push([pin.id, pin.connectedPinId]);
+      if (pin.connectedPinId !== null)
+        pairs.push(
+          pin.ioType === "output"
+            ? [pin.id, pin.connectedPinId]
+            : [pin.connectedPinId, pin.id]
+        );
     }
 
     for (const [a, b] of pinPairs) {
