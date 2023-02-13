@@ -148,6 +148,32 @@ export class CoreManager {
     );
   }
 
+  deleteNode(id: number) {
+    const node = this.nodes.get(id);
+
+    if (!node) {
+      return err(`Node with id ${id} does not exist`);
+    }
+
+    let graphId = -1;
+
+    for (const [gId, graph] of [...this.graphs]) {
+      if (graph.nodeIds.includes(id)) {
+        graph.nodeIds = graph.nodeIds.filter((i) => i !== id);
+        graphId = gId;
+        break;
+      }
+    }
+
+    for (const pinId of node.pinIds) {
+      this.deletePin(pinId);
+    }
+
+    this.nodes.delete(id);
+
+    this.evtsCore.emit("update_graph", { id: graphId });
+  }
+
   getNode(id: number): Result<GraphNode, string> {
     const node = this.nodes.get(id);
 
@@ -200,6 +226,40 @@ export class CoreManager {
         },
       })
     );
+  }
+
+  deletePin(id: number) {
+    const pin = this.pins.get(id);
+
+    if (!pin) {
+      return err(`Pin with id ${id} does not exist`);
+    }
+
+    let nodeId = -1;
+
+    for (const [nId, node] of [...this.nodes]) {
+      if (node.pinIds.includes(id)) {
+        node.pinIds = node.pinIds.filter((i) => i !== id);
+        nodeId = nId;
+        break;
+      }
+    }
+
+    if (pin.canHaveConnectedPin()) {
+      if (pin.connectedPin) {
+        pin.disconnect();
+      }
+    } else {
+      for (const p of [...this.pins.values()]) {
+        if (p.connectedPin?.id === id) {
+          p.disconnect();
+        }
+      }
+    }
+
+    this.pins.delete(id);
+
+    this.evtsCore.emit("update_node", { id: nodeId });
   }
 
   getPin(id: number): Result<Pin, string> {

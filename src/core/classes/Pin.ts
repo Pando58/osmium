@@ -23,13 +23,25 @@ export class Pin<
     if (this.ioType === pin.ioType)
       return console.error("Pins of the same io type cannot be connected");
 
-    if (
-      (this.dataType === "execution" && this.ioType === "output") ||
-      (this.dataType !== "execution" && this.ioType === "input")
-    ) {
+    if (this.canHaveConnectedPin()) {
       this.connectedPin = pin;
     } else {
       pin.connectedPin = this;
     }
+  }
+
+  disconnect() {
+    if (!this.connectedPin) {
+      console.error(`Node with id ${this.id} is not connected`);
+    }
+
+    this.connectedPin = null;
+  }
+
+  canHaveConnectedPin() {
+    return (
+      (this.dataType === "execution" && this.ioType === "output") ||
+      (this.dataType !== "execution" && this.ioType === "input")
+    );
   }
 }

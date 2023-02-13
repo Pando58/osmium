@@ -24,6 +24,7 @@
   import { writable, type Writable } from "svelte/store";
   import GraphNode from "./GraphNode/GraphNode.svelte";
   import SvgLines from "./SvgLines/SvgLines.svelte";
+  import TopMenu from "./TopMenu/TopMenu.svelte";
 
   export let graphId: number | null;
 
@@ -163,6 +164,7 @@
       {#each graph.nodeIds as id}
         <GraphNode {id} {editorContainer} />
       {/each}
+      <TopMenu />
     {/if}
   </div>
 </div>

@@ -117,6 +117,10 @@ export function init(coreManager: CoreManager) {
     coreManager.newGraph();
   });
 
+  evtsUI.on("delete_node", ({ id }) => {
+    coreManager.deleteNode(id);
+  });
+
   evtsUI.on("move_node", ({ id, x, y }) => {
     const result = coreManager.getNode(id);
 
