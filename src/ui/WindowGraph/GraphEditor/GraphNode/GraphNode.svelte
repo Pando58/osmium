@@ -5,7 +5,11 @@
     type HandlerCoreNode,
   } from "@/core/communication/handlers";
   import { evtsUI } from "@/ui/communication/handlers";
-  import { onDestroy } from "svelte";
+  import { getContext, onDestroy } from "svelte";
+  import {
+    graphEditorKey,
+    type GraphEditorContext,
+  } from "../GraphEditor.svelte";
   import SortPins from "./SortPins.svelte";
 
   export let id: number;
@@ -66,14 +70,29 @@
   onDestroy(() => {
     removeEventListener("pointermove", onPointerMove);
   });
+
+  //
+  const { selectNode, getSelectedNodeId } =
+    getContext<GraphEditorContext>(graphEditorKey);
+
+  const selectedNodeId = getSelectedNodeId();
+
+  function onPointerDownNode(e: PointerEvent) {
+    if (e.target instanceof Element && e.target.hasAttribute("data-target-pin"))
+      return;
+
+    selectNode(id);
+  }
 </script>
 
 {#if node}
   <div
-    class="absolute"
+    class="absolute after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:outline-double after:outline-2 after:outline-white/70"
+    class:after:hidden={id !== $selectedNodeId}
     style:left={node.x + "em"}
     style:top={node.y + "em"}
     bind:this={nodeContainer}
+    on:pointerdown={onPointerDownNode}
   >
     <div
       class="flex rounded-t-md border border-black/40 bg-zinc-800/90 py-[0.1em] px-[0.3em] shadow-md shadow-black/30"

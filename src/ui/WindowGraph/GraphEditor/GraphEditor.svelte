@@ -8,6 +8,8 @@
     clearSvg(id: number): void;
     setPressPinId(id: number): void;
     setReleasePinId(id: number): void;
+    selectNode(id: number): void;
+    getSelectedNodeId(): Writable<number>;
   }
 </script>
 
@@ -19,12 +21,15 @@
   } from "@/core/communication/handlers";
   import { evtsUI } from "@/ui/communication/handlers";
   import { onDestroy, setContext } from "svelte";
+  import { writable, type Writable } from "svelte/store";
   import GraphNode from "./GraphNode/GraphNode.svelte";
   import SvgLines from "./SvgLines/SvgLines.svelte";
 
   export let graphId: number | null;
 
   let graph: HandlerCoreGraph | null = null;
+
+  let editorContainer: HTMLDivElement;
 
   //
   async function updateGraph(evt?: { id: number }) {
@@ -57,7 +62,7 @@
   let pinPairs: [number, number][] = [];
 
   setContext<GraphEditorContext>(graphEditorKey, {
-    registerPinPair(a: number, b: number) {
+    registerPinPair(a, b) {
       const index = pinPairs.findIndex(
         ([u, v]) => (a === u && b === v) || (a === v && b === u)
       );
@@ -66,7 +71,7 @@
 
       pinPairs = [...pinPairs, [a, b]];
     },
-    clearPinPair(a: number, b: number) {
+    clearPinPair(a, b) {
       const index = pinPairs.findIndex(
         ([u, v]) => (a === u && b === v) || (a === v && b === u)
       );
@@ -75,21 +80,27 @@
 
       pinPairs = pinPairs;
     },
-    registerSvg(id: number, svg: SVGElement) {
+    registerSvg(id, svg) {
       svgs.set(id, svg);
 
       svgs = svgs;
     },
-    clearSvg(id: number) {
+    clearSvg(id) {
       svgs.delete(id);
 
       svgs = svgs;
     },
-    setPressPinId(id: number) {
+    setPressPinId(id) {
       pressPinId = id;
     },
-    setReleasePinId(id: number) {
+    setReleasePinId(id) {
       releasePinId = id;
+    },
+    selectNode(id) {
+      $selectedNodeId = id;
+    },
+    getSelectedNodeId() {
+      return selectedNodeId;
     },
   });
 
@@ -113,7 +124,17 @@
   });
 
   //
-  let editorContainer: HTMLDivElement;
+  let selectedNodeId = writable(-1);
+
+  function unselectNode(e: PointerEvent) {
+    if (
+      e.target instanceof Element &&
+      !e.target.hasAttribute("data-target-unselect-nodes")
+    )
+      return;
+
+    $selectedNodeId = -1;
+  }
 </script>
 
 <div
@@ -134,6 +155,7 @@
     background-position: 0em 0em;
   `}
   bind:this={editorContainer}
+  on:pointerdown={unselectNode}
 >
   <div class="absolute h-[400%] w-[400%]">
     {#if graph}

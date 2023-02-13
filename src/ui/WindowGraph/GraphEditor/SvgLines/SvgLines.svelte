@@ -111,7 +111,11 @@
   });
 </script>
 
-<svg class="absolute h-full w-full" bind:this={containerSvg}>
+<svg
+  class="absolute h-full w-full"
+  bind:this={containerSvg}
+  data-target-unselect-nodes
+>
   {#each paths as coords}
     <Path {coords} />
   {/each}

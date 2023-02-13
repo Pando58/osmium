@@ -41,7 +41,11 @@
   });
 </script>
 
-<svg viewBox="0 0 24 24" class="h-[0.7em] w-[0.7em]" bind:this={svg}>
+<svg
+  viewBox="0 0 24 24"
+  class="pointer-events-none h-[0.7em] w-[0.7em]"
+  bind:this={svg}
+>
   {#if dataType === "execution"}
     <!-- {#if connected} -->
     <polygon points="3.215,0 24,12 3.215,24" fill={pinColors[dataType]} />

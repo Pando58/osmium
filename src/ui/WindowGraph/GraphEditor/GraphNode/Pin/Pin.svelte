@@ -26,7 +26,11 @@
     class="flex h-[1em] items-center gap-[0.5em]"
     class:flex-row-reverse={pin.ioType === "output"}
   >
-    <div on:pointerdown={onPointerEvent} on:pointerup={onPointerEvent}>
+    <div
+      on:pointerdown={onPointerEvent}
+      on:pointerup={onPointerEvent}
+      data-target-pin
+    >
       <PinSvg id={pin.id} dataType={pin.dataType} />
     </div>
     <span class="text-[0.65em]">{pin.name}</span>
