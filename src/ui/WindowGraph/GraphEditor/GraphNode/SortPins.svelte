@@ -57,6 +57,10 @@
       if (pin.connectedPinId !== null) pairs.push([pin.id, pin.connectedPinId]);
     }
 
+    for (const [a, b] of pinPairs) {
+      clearPinPair(a, b);
+    }
+
     for (const [a, b] of pairs) {
       registerPinPair(a, b);
     }
