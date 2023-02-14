@@ -3,12 +3,13 @@
 
   export let label: string;
   export let menuItems: { text: string; fn: () => void }[];
+  let liContainer: HTMLLIElement;
   let labelElement: HTMLSpanElement;
   let ulMenu: HTMLUListElement;
   let menuActive = false;
 
   function clickLabel(e: PointerEvent) {
-    if (e.target !== labelElement) return;
+    if (e.target !== labelElement && e.target !== liContainer) return;
 
     menuActive = !menuActive;
   }
@@ -16,6 +17,7 @@
   function hideMenu(e: PointerEvent) {
     if (
       e.target === labelElement ||
+      e.target === liContainer ||
       (e.target as Element).parentElement === ulMenu
     )
       return;
@@ -32,6 +34,7 @@
 
 <li
   class="flex cursor-pointer items-center px-2 hover:bg-zinc-500/20"
+  bind:this={liContainer}
   on:pointerdown={clickLabel}
 >
   <span bind:this={labelElement}>{label}</span>
