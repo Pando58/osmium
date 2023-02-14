@@ -12,9 +12,12 @@ export class Graph {
   }
 
   init() {
-    const startNode = this.coreManager.newNode(this.id, "TestNode").unwrap()!;
-    const outputNode = this.coreManager.newNode(this.id, "TestNode").unwrap()!;
+    const nOnPlay = this.coreManager.newNode(this.id, "OnPlay").unwrap()!;
+    const nOutput = this.coreManager.newNode(this.id, "OutputNode").unwrap()!;
 
-    outputNode.x = 10;
+    nOnPlay.x = 2;
+    nOnPlay.y = 2;
+    nOutput.x = 15;
+    nOutput.y = 2;
   }
 }

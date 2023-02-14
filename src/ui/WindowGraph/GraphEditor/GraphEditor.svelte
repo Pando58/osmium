@@ -164,7 +164,7 @@
       {#each graph.nodeIds as id}
         <GraphNode {id} {editorContainer} />
       {/each}
-      <TopMenu />
+      <TopMenu {graphId} />
     {/if}
   </div>
 </div>

@@ -14,3 +14,5 @@ export const nodeFactories: NodeFactory[] = Object.entries(nodes).map(
       new nodeClass(id, coreManager),
   })
 );
+
+export type UIAddNodes = Exclude<keyof typeof nodes, "OnPlay" | "OutputNode">;
