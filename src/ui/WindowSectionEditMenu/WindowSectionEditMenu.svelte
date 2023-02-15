@@ -7,6 +7,7 @@
   import { onDestroy } from "svelte";
   import { z } from "zod";
   import { evtsUI } from "../communication/handlers";
+  import InputNumber from "../interactiveComponents/InputNumber.svelte";
   import type { EventHandlerMessages } from "../misc/EventHandlerMessages";
 
   export let winName: string;
@@ -53,24 +54,24 @@
   <div class="absolute inset-0">
     <div class="flex justify-center p-2">
       <div class="table border-spacing-1.5 text-xs">
+        <!-- svelte-ignore a11y-label-has-associated-control -->
         <label class="table-row">
           <span class="table-cell w-0 pr-1">Position:</span>
-          <input
-            type="number"
-            step="1"
-            min="0"
-            class="table-cell w-20 rounded border border-zinc-700 bg-zinc-850 py-1 px-1 pl-1.5"
+          <InputNumber
+            step={1}
+            min={0}
+            class_="w-20 table-cell"
             bind:value={section.position}
             on:change={() => inputChange({ position: section?.position })}
           />
         </label>
+        <!-- svelte-ignore a11y-label-has-associated-control -->
         <label class="table-row">
           <span class="table-cell w-0 pr-1">Length:</span>
-          <input
-            type="number"
-            step="1"
-            min="0"
-            class="table-cell w-20 rounded border border-zinc-700 bg-zinc-850 py-1 px-1 pl-1.5"
+          <InputNumber
+            step={1}
+            min={0}
+            class_="w-20 table-cell"
             bind:value={section.length}
             on:change={() => inputChange({ length: section?.length })}
           />
