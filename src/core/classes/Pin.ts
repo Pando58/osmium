@@ -16,6 +16,7 @@ export class Pin<
   connectedPin: Pin | null = null;
   defaultValue: PinDataTypes[T];
   value: PinDataTypes[T] | null = null;
+  onTriggerFn = () => {};
 
   constructor(dataType: T, ioType: U, id: number) {
     this.dataType = dataType;
@@ -58,6 +59,8 @@ export class Pin<
   }
 
   trigger(): PinDataTypes[T] | null {
+    this.onTriggerFn();
+
     if (this.canHaveConnectedPin()) {
       if (this.connectedPin) {
         const val = this.connectedPin.trigger() as PinDataTypes[T] | null;
@@ -71,5 +74,7 @@ export class Pin<
     return this.value as PinDataTypes[T] | null;
   }
 
-  // onTrigger() {}
+  onTrigger(fn: () => void) {
+    this.onTriggerFn = fn;
+  }
 }
