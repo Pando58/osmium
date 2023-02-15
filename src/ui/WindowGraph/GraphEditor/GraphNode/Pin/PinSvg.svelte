@@ -3,8 +3,8 @@
     execution: "#f2f2f2",
     boolean: "#ed3939",
     integer: "#f17d14",
+    noteEvents: "#8ded39",
     // note_sequence: "#39ed87",
-    // note_events: "#8ded39",
     // data_sequence: "#b367f2",
   };
 </script>
