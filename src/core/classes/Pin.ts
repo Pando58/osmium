@@ -62,12 +62,10 @@ export class Pin<
       if (this.connectedPin) {
         const val = this.connectedPin.trigger() as PinDataTypes[T] | null;
 
-        return val !== null
-          ? val
-          : this.value !== null
-          ? this.value
-          : this.defaultValue;
+        if (val !== null) return val;
       }
+
+      return this.defaultValue;
     }
 
     return this.value as PinDataTypes[T] | null;
