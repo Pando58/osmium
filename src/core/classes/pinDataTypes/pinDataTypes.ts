@@ -1,5 +1,5 @@
 export type PinDataTypes = {
-  execution: never;
+  execution: null;
   integer: number;
   boolean: boolean;
 };

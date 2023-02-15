@@ -1,4 +1,9 @@
-import type { PinDataType, PinIOType } from "./pinDataTypes/pinDataTypes";
+import { generateDefaultValue } from "./pinDataTypes/generateDefaultValue";
+import type {
+  PinDataType,
+  PinDataTypes,
+  PinIOType,
+} from "./pinDataTypes/pinDataTypes";
 
 export class Pin<
   T extends PinDataType = PinDataType,
@@ -9,11 +14,14 @@ export class Pin<
   dataType: T;
   ioType: U;
   connectedPin: Pin | null = null;
+  defaultValue: PinDataTypes[T];
+  value: PinDataTypes[T] | null = null;
 
   constructor(dataType: T, ioType: U, id: number) {
     this.dataType = dataType;
     this.ioType = ioType;
     this.id = id;
+    this.defaultValue = generateDefaultValue(dataType);
   }
 
   connect(pin: Pin) {
@@ -44,4 +52,26 @@ export class Pin<
       (this.dataType !== "execution" && this.ioType === "input")
     );
   }
+
+  setValue(val: Exclude<PinDataTypes[T], null>) {
+    this.value = val;
+  }
+
+  trigger(): PinDataTypes[T] | null {
+    if (this.canHaveConnectedPin()) {
+      if (this.connectedPin) {
+        const val = this.connectedPin.trigger() as PinDataTypes[T] | null;
+
+        return val !== null
+          ? val
+          : this.value !== null
+          ? this.value
+          : this.defaultValue;
+      }
+    }
+
+    return this.value as PinDataTypes[T] | null;
+  }
+
+  // onTrigger() {}
 }
