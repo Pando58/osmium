@@ -34,6 +34,11 @@
       <PinSvg id={pin.id} dataType={pin.dataType} />
     </div>
     <span class="text-[0.65em]">{pin.name}</span>
+    {#if pin.ioType === "input" && pin.dataType !== "execution"}
+      <span class="rounded border border-white/20 px-1 text-[0.65em]"
+        >{pin.defaultValue}</span
+      >
+    {/if}
     <div class="w-[2em]" />
   </div>
 {/if}

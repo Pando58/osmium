@@ -2,6 +2,7 @@ import { commandHandler } from "@/communication/commandHandler";
 import { eventHandler } from "@/communication/eventHandler";
 import type {
   PinDataType,
+  PinDataTypes,
   PinIOType,
 } from "../classes/pinDataTypes/pinDataTypes";
 
@@ -56,6 +57,7 @@ export type HandlerCorePin = {
   dataType: PinDataType;
   ioType: PinIOType;
   connectedPinId: number | null;
+  defaultValue: PinDataTypes[PinDataType];
 };
 
 export const evtsCore = eventHandler<CoreEventMap>();
