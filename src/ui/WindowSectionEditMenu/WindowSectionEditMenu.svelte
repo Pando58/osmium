@@ -8,6 +8,7 @@
   import { z } from "zod";
   import { evtsUI } from "../communication/handlers";
   import InputNumber from "../interactiveComponents/InputNumber.svelte";
+  import PropsTable from "../interactiveComponents/PropsTable.svelte";
   import type { EventHandlerMessages } from "../misc/EventHandlerMessages";
 
   export let winName: string;
@@ -53,30 +54,28 @@
 {#if section}
   <div class="absolute inset-0">
     <div class="flex justify-center p-2">
-      <div class="table border-spacing-1.5 text-xs">
+      <PropsTable>
         <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label class="table-row">
-          <span class="table-cell w-0 pr-1">Position:</span>
+        <label>
+          <span>Position:</span>
           <InputNumber
             step={1}
             min={0}
-            class_="w-20 table-cell"
             bind:value={section.position}
             on:change={() => inputChange({ position: section?.position })}
           />
         </label>
         <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label class="table-row">
-          <span class="table-cell w-0 pr-1">Length:</span>
+        <label>
+          <span>Length:</span>
           <InputNumber
             step={1}
             min={0}
-            class_="w-20 table-cell"
             bind:value={section.length}
             on:change={() => inputChange({ length: section?.length })}
           />
         </label>
-      </div>
+      </PropsTable>
     </div>
   </div>
 {/if}
