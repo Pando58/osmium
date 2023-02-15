@@ -4,6 +4,7 @@
 
   export let coords: [number, number, number, number];
   export let noHoverEffect = false;
+  export let onPointerDown = () => {};
 
   $: [ax, ay, bx, by] = coords;
 
@@ -36,4 +37,5 @@
   stroke-width={20}
   on:pointerenter={hoverPath}
   on:pointerleave={hoverPath}
+  on:pointerdown={onPointerDown}
 />

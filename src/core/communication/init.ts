@@ -147,6 +147,14 @@ export function init(coreManager: CoreManager) {
     pin1.connect(pin2);
   });
 
+  evtsUI.on("disconnect_pin", ({ id }) => {
+    const pin = coreManager.getPin(id);
+
+    if (!pin.ok) return console.error(pin.error);
+
+    pin.value.disconnect();
+  });
+
   evtsUI.on("create_node", ({ graphId, type, x, y }) => {
     const result = coreManager.newNode(graphId, type);
 

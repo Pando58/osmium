@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { evtsUI } from "@/ui/communication/handlers";
   import { getElementCenter } from "@/ui/misc/getElementCenter";
   import Path from "./Path.svelte";
 
@@ -16,6 +17,11 @@
 
     path = [ax - left, ay - top, bx - left, by - top];
   }
+
+  function onPointerDown() {
+    evtsUI.emit("disconnect_pin", { id: svg1[0] });
+    evtsUI.emit("disconnect_pin", { id: svg2[0] });
+  }
 </script>
 
-<Path coords={path} />
+<Path coords={path} {onPointerDown} />
