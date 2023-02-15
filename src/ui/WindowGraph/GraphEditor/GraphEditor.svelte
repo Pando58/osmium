@@ -20,11 +20,12 @@
     type HandlerCoreGraph,
   } from "@/core/communication/handlers";
   import { evtsUI } from "@/ui/communication/handlers";
+  import type { UIAddNodes } from "@/core/classes/nodes/factory/nodeFactories";
+  import TopMenu from "@/ui/interactiveComponents/TopMenu/TopMenu.svelte";
   import { onDestroy, setContext } from "svelte";
   import { writable, type Writable } from "svelte/store";
   import GraphNode from "./GraphNode/GraphNode.svelte";
   import SvgLines from "./SvgLines/SvgLines.svelte";
-  import TopMenu from "./TopMenu/TopMenu.svelte";
 
   export let graphId: number | null;
 
@@ -136,6 +137,42 @@
 
     $selectedNodeId = -1;
   }
+
+  //
+  const addMenuNodes: { type: UIAddNodes; name: string }[] = [
+    {
+      type: "TestNode",
+      name: "Test Node",
+    },
+  ];
+
+  $: addMenuItems = addMenuNodes.map(({ type, name }) => ({
+    text: name,
+    fn: () => {
+      if (graphId === null) return;
+
+      evtsUI.emit("create_node", { graphId, type, x: 2, y: 2 });
+    },
+  }));
+
+  $: menuEntries = [
+    {
+      label: "Add node",
+      menuItems: addMenuItems,
+    },
+    {
+      label: "Edit",
+      menuItems: [
+        {
+          text: "Delete node",
+          fn: () => {
+            evtsUI.emit("delete_node", { id: $selectedNodeId });
+            $selectedNodeId = -1;
+          },
+        },
+      ],
+    },
+  ];
 </script>
 
 <div
@@ -164,7 +201,7 @@
       {#each graph.nodeIds as id}
         <GraphNode {id} {editorContainer} />
       {/each}
-      <TopMenu {graphId} />
+      <TopMenu entries={menuEntries} absolute={true} />
     {/if}
   </div>
 </div>
