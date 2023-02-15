@@ -3,6 +3,7 @@
   import { tweened } from "svelte/motion";
 
   export let coords: [number, number, number, number];
+  export let noHoverEffect = false;
 
   $: [ax, ay, bx, by] = coords;
 
@@ -13,9 +14,11 @@
   const strokeWidth = tweened(2, { duration: 200, easing: cubicInOut });
   const opacity = tweened(0.8, { duration: 200, easing: cubicInOut });
 
-  function hoverPath(e: MouseEvent) {
-    strokeWidth.set(e.type === "mouseenter" ? 4 : 2);
-    opacity.set(e.type === "mouseenter" ? 1 : 0.8);
+  function hoverPath(e: PointerEvent) {
+    if (noHoverEffect) return;
+
+    strokeWidth.set(e.type === "pointerenter" ? 4 : 2);
+    opacity.set(e.type === "pointerenter" ? 1 : 0.8);
   }
 </script>
 
@@ -31,6 +34,6 @@
   fill="none"
   stroke="#0000"
   stroke-width={20}
-  on:mouseenter={hoverPath}
-  on:mouseleave={hoverPath}
+  on:pointerenter={hoverPath}
+  on:pointerleave={hoverPath}
 />

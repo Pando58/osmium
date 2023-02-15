@@ -64,5 +64,5 @@
 </script>
 
 {#if pressPinId !== null}
-  <Path coords={pinDragCoords} />
+  <Path coords={pinDragCoords} noHoverEffect={true} />
 {/if}
