@@ -1,6 +1,7 @@
 <script lang="ts">
   import { cmdsCore, evtsCore } from "@/core/communication/handlers";
   import { evtsUI } from "@/ui/communication/handlers";
+  import SelectWithButtons from "@/ui/interactiveComponents/SelectWithButtons.svelte";
   import { onDestroy } from "svelte";
   import GraphSelectOption from "./GraphSelectOption.svelte";
 
@@ -25,27 +26,17 @@
   });
 </script>
 
-<div class="flex p-2">
-  <select
-    class="flex-1 rounded-l border border-zinc-700 bg-zinc-850 p-0.5 text-xs"
-    bind:value={selectedId}
-    name=""
-    id=""
-  >
-    <option disabled hidden selected value={null} />
-    {#each graphIds as graphId}
-      <GraphSelectOption {graphId} />
-    {/each}
-  </select>
-  <button
-    class="w-6 border border-l-0 border-zinc-700 bg-zinc-600 text-xs font-bold"
-    on:click={() => evtsUI.emit("create_graph", null)}
-  >
-    +
-  </button>
-  <button
-    class="w-6 rounded-r border border-l-0 border-zinc-700 bg-zinc-600 text-xs font-bold"
-  >
-    x
-  </button>
+<div class="p-2">
+  <SelectWithButtons>
+    <select bind:value={selectedId} name="" id="">
+      <option disabled hidden selected value={null} />
+      {#each graphIds as graphId}
+        <GraphSelectOption {graphId} />
+      {/each}
+    </select>
+    <button class="text-xs" on:click={() => evtsUI.emit("create_graph", null)}>
+      +
+    </button>
+    <button class="text-xs"> - </button>
+  </SelectWithButtons>
 </div>
