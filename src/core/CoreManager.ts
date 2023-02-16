@@ -207,7 +207,7 @@ export class CoreManager {
 
     const id = getNextId(this.pins);
 
-    const pin = new Pin(dataType, ioType, id);
+    const pin = new Pin(dataType, ioType, id, node);
 
     node.pinIds = [...node.pinIds, id];
 

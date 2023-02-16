@@ -1,3 +1,4 @@
+import type { GraphNode } from "./GraphNode";
 import { generateDefaultValue } from "./pinDataTypes/generateDefaultValue";
 import type {
   PinDataType,
@@ -10,6 +11,7 @@ export class Pin<
   U extends PinIOType = PinIOType
 > {
   id: number;
+  node: GraphNode;
   name = "";
   dataType: T;
   ioType: U;
@@ -18,10 +20,11 @@ export class Pin<
   value: PinDataTypes[T] | null = null;
   onTriggerFn = () => {};
 
-  constructor(dataType: T, ioType: U, id: number) {
+  constructor(dataType: T, ioType: U, id: number, node: GraphNode) {
     this.dataType = dataType;
     this.ioType = ioType;
     this.id = id;
+    this.node = node;
     this.defaultValue = generateDefaultValue(dataType);
   }
 
