@@ -9,6 +9,14 @@
 
   export let pin: HandlerCorePin;
 
+  const { getPinPairs } = getContext<GraphEditorContext>(graphEditorKey);
+
+  const pinPairs = getPinPairs();
+
+  $: connected = $pinPairs.some(([a, b]) => {
+    return a === pin.id || b === pin.id;
+  });
+
   const { setPressPinId, setReleasePinId } =
     getContext<GraphEditorContext>(graphEditorKey);
 
@@ -31,7 +39,7 @@
       on:pointerup={onPointerEvent}
       data-target-pin
     >
-      <PinSvg id={pin.id} dataType={pin.dataType} />
+      <PinSvg id={pin.id} dataType={pin.dataType} {connected} />
     </div>
     <span class="text-[0.65em]">{pin.name}</span>
     {#if pin.ioType === "input" && pin.dataType !== "execution"}

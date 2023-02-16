@@ -4,6 +4,7 @@
   export interface GraphEditorContext {
     registerPinPair(a: number, b: number): void;
     clearPinPair(a: number, b: number): void;
+    getPinPairs(): Writable<[number, number][]>;
     registerSvg(id: number, svg: SVGElement): void;
     clearSvg(id: number): void;
     setPressPinId(id: number): void;
@@ -61,26 +62,29 @@
 
   //
   let svgs: Map<number, SVGElement> = new Map();
-  let pinPairs: [number, number][] = [];
+  let pinPairs: Writable<[number, number][]> = writable([]);
 
   setContext<GraphEditorContext>(graphEditorKey, {
     registerPinPair(a, b) {
-      const index = pinPairs.findIndex(
+      const index = $pinPairs.findIndex(
         ([u, v]) => (a === u && b === v) || (a === v && b === u)
       );
 
-      if (index > -1) pinPairs.splice(index, 1);
+      if (index > -1) $pinPairs.splice(index, 1);
 
-      pinPairs = [...pinPairs, [a, b]];
+      $pinPairs = [...$pinPairs, [a, b]];
     },
     clearPinPair(a, b) {
-      const index = pinPairs.findIndex(
+      const index = $pinPairs.findIndex(
         ([u, v]) => (a === u && b === v) || (a === v && b === u)
       );
 
-      if (index > -1) pinPairs.splice(index, 1);
+      if (index > -1) $pinPairs.splice(index, 1);
 
-      pinPairs = pinPairs;
+      $pinPairs = $pinPairs;
+    },
+    getPinPairs() {
+      return pinPairs;
     },
     registerSvg(id, svg) {
       svgs.set(id, svg);

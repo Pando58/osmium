@@ -146,6 +146,16 @@ export function init(coreManager: CoreManager) {
     const pin2 = result2.value;
 
     pin1.connect(pin2);
+
+    const otherPinId = pin1.canHaveConnectedPin() ? pin2.id : pin1.id;
+
+    const node = [...coreManager.nodes.values()].find(({ pinIds }) =>
+      pinIds.includes(otherPinId)
+    );
+
+    if (!node) return;
+
+    evtsCore.emit("update_node", { id: node.id });
   });
 
   evtsUI.on("disconnect_pin", ({ id }) => {
@@ -153,7 +163,19 @@ export function init(coreManager: CoreManager) {
 
     if (!pin.ok) return console.error(pin.error);
 
+    const otherPinId = pin.value.connectedPin?.id;
+
     pin.value.disconnect();
+
+    if (otherPinId === undefined) return;
+
+    const node = [...coreManager.nodes.values()].find(({ pinIds }) =>
+      pinIds.includes(otherPinId)
+    );
+
+    if (!node) return;
+
+    evtsCore.emit("update_node", { id: node.id });
   });
 
   evtsUI.on("create_node", ({ graphId, type, x, y }) => {

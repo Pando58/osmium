@@ -105,7 +105,7 @@
       class="min-h-[2em] rounded-b-lg border border-t-0 border-black/60 bg-zinc-750/90 p-[0.4em] shadow-md shadow-black/30"
     >
       <div class="flex flex-col gap-[0.2em]">
-        <SortPins pinIds={node.pinIds} nodeId={id} />
+        <SortPins {node} />
       </div>
     </div>
   </div>

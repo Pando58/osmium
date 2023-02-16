@@ -1,10 +1,11 @@
 <script lang="ts">
   import { evtsCore } from "@/core/communication/handlers";
   import { onDestroy } from "svelte";
+  import type { Writable } from "svelte/store";
   import PathCoords from "./PathCoords.svelte";
   import PathMouse from "./PathMouse.svelte";
 
-  export let pinPairs: [number, number][];
+  export let pinPairs: Writable<[number, number][]>;
   export let svgs: Map<number, SVGElement>;
   export let nodeIds: number[];
 
@@ -18,7 +19,7 @@
 
   $: {
     svgs;
-    pinPairs;
+    $pinPairs;
 
     if (containerSvg) {
       updatePaths();
@@ -29,7 +30,7 @@
   function updatePaths() {
     const pairs: typeof svgPairs = [];
 
-    for (const [a, b] of pinPairs) {
+    for (const [a, b] of $pinPairs) {
       const svg1 = svgs.get(a);
       const svg2 = svgs.get(b);
 

@@ -1,6 +1,10 @@
 <script lang="ts">
   import { pinDataTypeNames } from "@/core/classes/pinDataTypes/pinDataTypes";
-  import { cmdsCore, type HandlerCorePin } from "@/core/communication/handlers";
+  import {
+    cmdsCore,
+    type HandlerCoreNode,
+    type HandlerCorePin,
+  } from "@/core/communication/handlers";
   import { getContext, onDestroy } from "svelte";
   import {
     graphEditorKey,
@@ -8,18 +12,15 @@
   } from "../GraphEditor.svelte";
   import Pin from "./Pin/Pin.svelte";
 
-  export let pinIds: number[];
-  export let nodeId: number;
+  export let node: HandlerCoreNode;
 
   let pins: HandlerCorePin[] = [];
 
   //
-  async function updatePins(evt?: { id: number }) {
-    if (evt && evt.id !== nodeId) return;
-
+  async function updatePins() {
     const arr: HandlerCorePin[] = [];
 
-    for (const id of pinIds) {
+    for (const id of node.pinIds) {
       const pin: HandlerCorePin | null = await cmdsCore
         .request("pin", { id })
         .catch((err) => {
@@ -40,7 +41,7 @@
   }
 
   $: {
-    pinIds;
+    node;
     updatePins();
   }
 

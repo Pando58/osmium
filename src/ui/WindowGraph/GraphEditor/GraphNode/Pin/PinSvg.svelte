@@ -19,6 +19,7 @@
 
   export let id: number;
   export let dataType: keyof PinDataTypes | "execution";
+  export let connected: boolean;
 
   let svg: SVGElement;
 
@@ -47,9 +48,9 @@
   bind:this={svg}
 >
   {#if dataType === "execution"}
-    <!-- {#if connected} -->
-    <polygon points="3.215,0 24,12 3.215,24" fill={pinColors[dataType]} />
-    <!-- {:else}
+    {#if connected}
+      <polygon points="3.215,0 24,12 3.215,24" fill={pinColors[dataType]} />
+    {:else}
       <mask id="outline-mask-execution">
         <rect x="-2" y="-2" width="28" height="28" fill="white" />
         <polygon points="6.215,5.196 18,12 6.215,18.804" fill="black" />
@@ -57,10 +58,10 @@
       <polygon
         points="3.215,0 24,12 3.215,24"
         fill={pinColors[dataType]}
-        opacity="0.6"
+        opacity="0.8"
         mask="url(#outline-mask-execution)"
       />
-    {/if} -->
+    {/if}
   {:else}
     <mask id="outline-mask">
       <rect x="-2" y="-2" width="28" height="28" fill="white" />
@@ -71,10 +72,11 @@
       cy="12"
       r="12"
       fill={pinColors[dataType]}
+      opacity="0.8"
       mask="url(#outline-mask)"
     />
-    <!-- {#if connected} -->
-    <circle cx="12" cy="12" r="6" fill={pinColors[dataType]} />
-    <!-- {/if} -->
+    {#if connected}
+      <circle cx="12" cy="12" r="6" fill={pinColors[dataType]} />
+    {/if}
   {/if}
 </svg>
