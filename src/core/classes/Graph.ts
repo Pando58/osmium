@@ -1,10 +1,15 @@
 import type { CoreManager } from "../CoreManager";
+import type { GraphNode } from "./GraphNode";
+import type { OnPlay, OutputNode } from "./nodes";
 
 export class Graph {
   coreManager: CoreManager;
   id: number;
   nodeIds: number[] = [];
   name = "";
+  nodesOrdered: GraphNode[] = [];
+  nOnPlay: OnPlay = null!;
+  nOutput: OutputNode = null!;
 
   constructor(id: number, coreManager: CoreManager) {
     this.id = id;
@@ -12,12 +17,28 @@ export class Graph {
   }
 
   init() {
-    const nOnPlay = this.coreManager.newNode(this.id, "OnPlay").unwrap()!;
-    const nOutput = this.coreManager.newNode(this.id, "OutputNode").unwrap()!;
+    this.nOnPlay = this.coreManager
+      .newNode(this.id, "OnPlay")
+      .unwrap() as OnPlay;
+    this.nOutput = this.coreManager
+      .newNode(this.id, "OutputNode")
+      .unwrap() as OutputNode;
 
-    nOnPlay.x = 2;
-    nOnPlay.y = 2;
-    nOutput.x = 15;
-    nOutput.y = 2;
+    this.nOnPlay.x = 2;
+    this.nOnPlay.y = 2;
+    this.nOutput.x = 15;
+    this.nOutput.y = 2;
+  }
+
+  play() {
+    this.nodesOrdered = [...this.nOnPlay.getConnectedNodes().values()];
+
+    this.nOnPlay.outputPin.trigger();
+  }
+
+  step() {
+    for (const node of this.nodesOrdered) {
+      node.step();
+    }
   }
 }

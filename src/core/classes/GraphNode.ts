@@ -16,6 +16,8 @@ export class GraphNode {
 
   init() {}
 
+  step() {}
+
   getConnectedNodes(nodes?: Set<GraphNode>): Set<GraphNode> {
     if (!nodes) nodes = new Set([this]);
 
