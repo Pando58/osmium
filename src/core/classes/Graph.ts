@@ -33,7 +33,7 @@ export class Graph {
   play() {
     this.nodesOrdered = [...this.nOnPlay.getConnectedNodes().values()];
 
-    this.nOnPlay.outputPin.trigger();
+    this.nOnPlay.pPlay.trigger();
   }
 
   step() {

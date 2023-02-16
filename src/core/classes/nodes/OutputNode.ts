@@ -1,7 +1,10 @@
 import type { CoreManager } from "@/core/CoreManager";
 import { GraphNode } from "../GraphNode";
+import type { Pin } from "../Pin";
 
 export class OutputNode extends GraphNode {
+  pNoteEvents: Pin<"noteEvents", "input"> = null!;
+
   constructor(id: number, coreManager: CoreManager) {
     super(id, coreManager);
   }
@@ -9,8 +12,8 @@ export class OutputNode extends GraphNode {
   init() {
     this.name = "Output";
 
-    const dataInput = this.coreManager
-      .newPin(this.id, "boolean", "input")
+    this.pNoteEvents = this.coreManager
+      .newPin(this.id, "noteEvents", "input")
       .unwrap()!;
   }
 }
