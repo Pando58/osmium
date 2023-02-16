@@ -15,15 +15,12 @@
 
   let containerSvg: SVGElement;
 
-  let setPressedPinIsOutput: () => Promise<void>;
-
   $: {
     svgs;
     $pinPairs;
 
     if (containerSvg) {
       updatePaths();
-      setPressedPinIsOutput();
     }
   }
 
@@ -69,5 +66,5 @@
   {#each svgPairs as [svg1, svg2]}
     <PathCoords {svg1} {svg2} {containerSvg} />
   {/each}
-  <PathMouse {pressPinId} {svgs} {containerSvg} bind:setPressedPinIsOutput />
+  <PathMouse {pressPinId} {svgs} {containerSvg} />
 </svg>

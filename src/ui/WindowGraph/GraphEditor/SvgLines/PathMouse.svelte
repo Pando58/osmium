@@ -11,7 +11,12 @@
   let pinDragCoords: [number, number, number, number] = [0, 0, 0, 0];
   let pressedPinIsOutput = true;
 
-  export async function setPressedPinIsOutput() {
+  $: {
+    pressPinId;
+    setPressedPinIsOutput();
+  }
+
+  async function setPressedPinIsOutput() {
     if (pressPinId === null) return;
 
     const pin = await cmdsCore
