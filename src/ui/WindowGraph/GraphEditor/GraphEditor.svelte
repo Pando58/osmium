@@ -145,6 +145,10 @@
   //
   const addMenuNodes: { type: UIAddNodes; name: string }[] = [
     {
+      type: "PlayNoteSequence",
+      name: "Play Note Sequence",
+    },
+    {
       type: "TestNode",
       name: "Test Node",
     },

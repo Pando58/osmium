@@ -4,7 +4,7 @@
     boolean: "#ed3939",
     integer: "#f17d14",
     noteEvents: "#8ded39",
-    // note_sequence: "#39ed87",
+    noteSequence: "#39ed87",
     // data_sequence: "#b367f2",
   };
 </script>
