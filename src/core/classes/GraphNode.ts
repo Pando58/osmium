@@ -8,6 +8,7 @@ export class GraphNode {
   name = "";
   x = 0;
   y = 0;
+  states: Map<number, Record<string, any>> = new Map();
 
   constructor(id: number, coreManager: CoreManager) {
     this.id = id;
@@ -16,7 +17,7 @@ export class GraphNode {
 
   init() {}
 
-  step() {}
+  step(_instanceId: number) {}
 
   getConnectedNodes(nodes?: Set<GraphNode>): Set<GraphNode> {
     if (!nodes) nodes = new Set([this]);
@@ -50,5 +51,19 @@ export class GraphNode {
     }
 
     return nodes;
+  }
+
+  createState(_instanceId: number) {}
+
+  instance(instanceId: number) {
+    this.createState(instanceId);
+
+    for (const pinId of this.pinIds) {
+      const pin = this.coreManager.getPin(pinId).unwrap()!;
+
+      if (!pin) continue;
+
+      pin.instance(instanceId);
+    }
   }
 }

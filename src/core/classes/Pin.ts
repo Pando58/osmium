@@ -17,8 +17,8 @@ export class Pin<
   ioType: U;
   connectedPin: Pin | null = null;
   defaultValue: PinDataTypes[T];
-  value: PinDataTypes[T] | null = null;
-  onTriggerFn = () => {};
+  states: Map<number, PinDataTypes[T] | null> = new Map();
+  onTriggerFn = (_instanceId: number) => {};
 
   constructor(dataType: T, ioType: U, id: number, node: GraphNode) {
     this.dataType = dataType;
@@ -57,16 +57,23 @@ export class Pin<
     );
   }
 
-  setValue(val: Exclude<PinDataTypes[T], null>) {
-    this.value = val;
+  setValue(instanceId: number, val: Exclude<PinDataTypes[T], null>) {
+    if (!this.states.has(instanceId)) return;
+
+    this.states.set(instanceId, val);
   }
 
-  trigger(): PinDataTypes[T] | null {
-    this.onTriggerFn();
+  trigger(instanceId: number): PinDataTypes[T] | null {
+    const state = this.states.get(instanceId);
+    if (state === undefined) return null;
+
+    this.onTriggerFn(instanceId);
 
     if (this.canHaveConnectedPin()) {
       if (this.connectedPin) {
-        const val = this.connectedPin.trigger() as PinDataTypes[T] | null;
+        const val = this.connectedPin.trigger(instanceId) as
+          | PinDataTypes[T]
+          | null;
 
         if (val !== null) return val;
       }
@@ -74,10 +81,14 @@ export class Pin<
       return this.defaultValue;
     }
 
-    return this.value as PinDataTypes[T] | null;
+    return state as PinDataTypes[T] | null;
   }
 
-  onTrigger(fn: () => void) {
+  onTrigger(fn: (instanceId: number) => void) {
     this.onTriggerFn = fn;
+  }
+
+  instance(instanceId: number) {
+    this.states.set(instanceId, null);
   }
 }

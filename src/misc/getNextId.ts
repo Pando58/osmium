@@ -1,9 +1,9 @@
-export function getNextId(map: Map<number, unknown>) {
-  for (let i = 0; i < map.size; i++) {
-    if (!map.has(i)) {
+export function getNextId(list: Map<number, unknown> | Set<number>) {
+  for (let i = 0; i < list.size; i++) {
+    if (!list.has(i)) {
       return i;
     }
   }
 
-  return map.size;
+  return list.size;
 }
