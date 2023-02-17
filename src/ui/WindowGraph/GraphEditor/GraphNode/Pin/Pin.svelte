@@ -1,10 +1,13 @@
 <script lang="ts">
+  import type { PinDataType } from "@/core/classes/pinDataTypes/pinDataTypes";
   import type { HandlerCorePin } from "@/core/communication/handlers";
-  import { getContext } from "svelte";
+  import { getContext, type ComponentType } from "svelte";
   import {
     graphEditorKey,
     type GraphEditorContext,
   } from "../../GraphEditor.svelte";
+  import BooleanDV from "./defaultValues/BooleanDV.svelte";
+  import IntegerDV from "./defaultValues/IntegerDV.svelte";
   import PinSvg from "./PinSvg.svelte";
 
   export let pin: HandlerCorePin;
@@ -27,6 +30,15 @@
       setReleasePinId(pin.id);
     }
   }
+
+  //
+  const dvComponents: Record<PinDataType, ComponentType | null> = {
+    execution: null,
+    boolean: BooleanDV,
+    integer: IntegerDV,
+    noteEvents: null,
+    noteSequence: null,
+  };
 </script>
 
 {#if pin}
@@ -42,10 +54,8 @@
       <PinSvg id={pin.id} dataType={pin.dataType} {connected} />
     </div>
     <span class="text-[0.65em]">{pin.name}</span>
-    {#if pin.ioType === "input" && pin.dataType !== "execution"}
-      <span class="rounded border border-white/20 px-1 text-[0.65em]"
-        >{pin.defaultValue}</span
-      >
+    {#if pin.ioType === "input" && dvComponents[pin.dataType] !== null}
+      <svelte:component this={dvComponents[pin.dataType]} {pin} />
     {/if}
     <div class="w-[2em]" />
   </div>

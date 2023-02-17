@@ -118,6 +118,17 @@ export function init(coreManager: CoreManager) {
     coreManager.newGraph();
   });
 
+  evtsUI.on("create_node", ({ graphId, type, x, y }) => {
+    const result = coreManager.newNode(graphId, type);
+
+    if (!result.ok) return console.error(result.error);
+
+    const node = result.value;
+
+    node.x = x;
+    node.y = y;
+  });
+
   evtsUI.on("delete_node", ({ id }) => {
     coreManager.deleteNode(id);
   });
@@ -178,14 +189,13 @@ export function init(coreManager: CoreManager) {
     evtsCore.emit("update_node", { id: node.id });
   });
 
-  evtsUI.on("create_node", ({ graphId, type, x, y }) => {
-    const result = coreManager.newNode(graphId, type);
+  evtsUI.on("update_pin_default_value", ({ id, value }) => {
+    const result = coreManager.getPin(id);
 
     if (!result.ok) return console.error(result.error);
 
-    const node = result.value;
+    const pin = result.value;
 
-    node.x = x;
-    node.y = y;
+    pin.setDefaultValue(value);
   });
 }

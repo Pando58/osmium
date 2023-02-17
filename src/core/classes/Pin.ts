@@ -1,9 +1,10 @@
 import type { GraphNode } from "./GraphNode";
 import { generateDefaultValue } from "./pinDataTypes/generateDefaultValue";
-import type {
-  PinDataType,
-  PinDataTypes,
-  PinIOType,
+import {
+  pinDataTypesSchema,
+  type PinDataType,
+  type PinDataTypes,
+  type PinIOType,
 } from "./pinDataTypes/pinDataTypes";
 
 export class Pin<
@@ -61,6 +62,16 @@ export class Pin<
     if (!this.states.has(instanceId)) return;
 
     this.states.set(instanceId, val);
+  }
+
+  setDefaultValue(val: PinDataTypes[PinDataType]) {
+    const parse = pinDataTypesSchema.shape[this.dataType].safeParse(val);
+
+    if (!parse.success) {
+      return console.error(parse.error);
+    }
+
+    this.defaultValue = val as any;
   }
 
   trigger(instanceId: number): PinDataTypes[T] | null {

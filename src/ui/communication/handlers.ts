@@ -1,5 +1,9 @@
 import { eventHandler } from "@/communication/eventHandler";
 import type { UIAddNodes } from "@/core/classes/nodes/factory/nodeFactories";
+import type {
+  PinDataType,
+  PinDataTypes,
+} from "@/core/classes/pinDataTypes/pinDataTypes";
 import type { HandlerCoreSection } from "@/core/communication/handlers";
 
 export const evtsUI = eventHandler<{
@@ -15,4 +19,8 @@ export const evtsUI = eventHandler<{
   move_node: { id: number; x: number; y: number };
   connect_pins: { id1: number; id2: number };
   disconnect_pin: { id: number };
+  update_pin_default_value: {
+    id: number;
+    value: PinDataTypes[PinDataType];
+  };
 }>();
