@@ -1,4 +1,3 @@
-import { getNextId } from "@/misc/getNextId";
 import type { CoreManager } from "../CoreManager";
 import type { GraphNode } from "./GraphNode";
 import type { OnPlay, OutputNode } from "./nodes";
@@ -41,7 +40,6 @@ export class Graph {
   stop(instanceId: number) {
     for (const nodeId of this.nodeIds) {
       const node = this.coreManager.getNode(nodeId).unwrap()!;
-
       if (!node) continue;
 
       node.stop(instanceId);
@@ -54,18 +52,33 @@ export class Graph {
     }
   }
 
-  instance() {
-    const instanceId = getNextId(this.instanceIds);
-    this.instanceIds.add(instanceId);
+  instance(sectionId: number) {
+    if (this.instanceIds.has(sectionId)) {
+      return console.error(`Instance with id ${sectionId} already exists`);
+    }
+
+    this.instanceIds.add(sectionId);
 
     for (const nodeId of this.nodeIds) {
       const node = this.coreManager.getNode(nodeId).unwrap()!;
-
       if (!node) continue;
 
-      node.instance(instanceId);
+      node.instance(sectionId);
+    }
+  }
+
+  deleteInstance(sectionId: number) {
+    if (!this.instanceIds.has(sectionId)) {
+      return console.error(`Instance with id ${sectionId} does not exist`);
     }
 
-    return instanceId;
+    for (const nodeId of this.nodeIds) {
+      const node = this.coreManager.getNode(nodeId).unwrap()!;
+      if (!node) continue;
+
+      node.deleteInstance(sectionId);
+    }
+
+    this.instanceIds.delete(sectionId);
   }
 }

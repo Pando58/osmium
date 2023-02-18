@@ -35,6 +35,7 @@ export type HandlerCoreSection = {
   id: number;
   position: number;
   length: number;
+  graphId: number | null;
 };
 
 export type HandlerCoreGraph = {

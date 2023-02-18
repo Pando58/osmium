@@ -76,4 +76,16 @@ export class GraphNode {
       pin.instance(instanceId);
     }
   }
+
+  deleteInstance(instanceId: number) {
+    this.states.delete(instanceId);
+
+    for (const pinId of this.pinIds) {
+      const pin = this.coreManager.getPin(pinId).unwrap()!;
+
+      if (!pin) continue;
+
+      pin.deleteInstance(instanceId);
+    }
+  }
 }

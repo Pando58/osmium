@@ -35,12 +35,13 @@ export function init(coreManager: CoreManager) {
 
     if (!section.ok) return err(section.error);
 
-    const { position, length } = section.value;
+    const { position, length, graphId } = section.value;
 
     return ok({
       id,
       position,
       length,
+      graphId,
     });
   });
 
@@ -112,6 +113,26 @@ export function init(coreManager: CoreManager) {
     if ("length" in props) section.value.length = props.length!;
 
     evtsCore.emit("update_section", { id: sectionId });
+  });
+
+  evtsUI.on("update_section_graph", ({ id, graphId }) => {
+    const sectionRes = coreManager.getSection(id);
+
+    if (!sectionRes.ok) return console.error(sectionRes.error);
+
+    const section = sectionRes.value;
+
+    if (section.graphId !== null) {
+      const graph = coreManager.getGraph(section.graphId).unwrap()!;
+      graph.deleteInstance(id);
+    }
+
+    if (graphId !== null) {
+      const graph = coreManager.getGraph(graphId).unwrap()!;
+      graph.instance(id);
+    }
+
+    section.graphId = graphId;
   });
 
   evtsUI.on("create_graph", () => {

@@ -10,6 +10,7 @@
   import InputNumber from "../interactiveComponents/InputNumber.svelte";
   import PropsTable from "../interactiveComponents/PropsTable.svelte";
   import type { EventHandlerMessages } from "../misc/EventHandlerMessages";
+  import GraphSelect from "./GraphSelect.svelte";
 
   export let winName: string;
   winName = "Section properties";
@@ -74,6 +75,13 @@
             bind:value={section.length}
             on:change={() => inputChange({ length: section?.length })}
           />
+        </label>
+        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <label>
+          <span>Graph:</span>
+          <div>
+            <GraphSelect {sectionId} />
+          </div>
         </label>
       </PropsTable>
     </div>

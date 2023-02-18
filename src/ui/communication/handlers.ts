@@ -13,6 +13,7 @@ export const evtsUI = eventHandler<{
     sectionId: number;
     props: Partial<Omit<HandlerCoreSection, "id">>;
   };
+  update_section_graph: { id: number; graphId: number | null };
   create_graph: null;
   create_node: { graphId: number; type: UIAddNodes; x: number; y: number };
   delete_node: { id: number };

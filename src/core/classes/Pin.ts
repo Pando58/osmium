@@ -103,6 +103,10 @@ export class Pin<
     this.states.set(instanceId, null);
   }
 
+  deleteInstance(instanceId: number) {
+    this.states.delete(instanceId);
+  }
+
   stop(instanceId: number) {
     this.setValue(instanceId, null);
   }
