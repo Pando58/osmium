@@ -8,6 +8,7 @@
   } from "../../GraphEditor.svelte";
   import BooleanDV from "./defaultValues/BooleanDV.svelte";
   import IntegerDV from "./defaultValues/IntegerDV.svelte";
+  import NoteSequenceDV from "./defaultValues/NoteSequenceDV.svelte";
   import PinSvg from "./PinSvg.svelte";
 
   export let pin: HandlerCorePin;
@@ -37,7 +38,7 @@
     boolean: BooleanDV,
     integer: IntegerDV,
     noteEvents: null,
-    noteSequence: null,
+    noteSequence: NoteSequenceDV,
   };
 </script>
 

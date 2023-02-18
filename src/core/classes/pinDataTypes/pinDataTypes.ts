@@ -29,6 +29,7 @@ export const pinDataTypesSchema = z.object({
 });
 
 export type NoteEvent = z.infer<typeof noteEventSchema>;
+// export type NoteSequenceEvent = NoteEvent & { position: number };
 export type NoteSequence = z.infer<typeof noteSequenceSchema>;
 export type PinDataTypes = z.infer<typeof pinDataTypesSchema>;
 export type PinDataType = keyof PinDataTypes;
@@ -41,4 +42,11 @@ export const pinDataTypeNames: PinDataType[] = [
   "boolean",
   "noteEvents",
   "noteSequence",
+];
+
+// The order of the values is used to sort the sequence in the edit note sequence window
+export const noteEventNames: NoteEvent["type"][] = [
+  "note_off",
+  "note_on",
+  "all_notes_off",
 ];
