@@ -47,6 +47,14 @@ export class PlayNoteSequence extends GraphNode {
     });
   }
 
+  stop(instanceId: number) {
+    const state = this.states.get(instanceId);
+    if (!state) return;
+
+    state.playing = false;
+    state.position = 0;
+  }
+
   step(instanceId: number) {
     const state = this.states.get(instanceId);
     if (!state) return;

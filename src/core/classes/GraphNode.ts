@@ -17,6 +17,16 @@ export class GraphNode {
 
   init() {}
 
+  stop(instanceId: number) {
+    for (const pinId of this.pinIds) {
+      const pin = this.coreManager.getPin(pinId).unwrap()!;
+
+      if (!pin) continue;
+
+      pin.stop(instanceId);
+    }
+  }
+
   step(_instanceId: number) {}
 
   getConnectedNodes(nodes?: Set<GraphNode>): Set<GraphNode> {

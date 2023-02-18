@@ -58,7 +58,7 @@ export class Pin<
     );
   }
 
-  setValue(instanceId: number, val: Exclude<PinDataTypes[T], null>) {
+  setValue(instanceId: number, val: PinDataTypes[T] | null) {
     if (!this.states.has(instanceId)) return;
 
     this.states.set(instanceId, val);
@@ -101,5 +101,9 @@ export class Pin<
 
   instance(instanceId: number) {
     this.states.set(instanceId, null);
+  }
+
+  stop(instanceId: number) {
+    this.setValue(instanceId, null);
   }
 }

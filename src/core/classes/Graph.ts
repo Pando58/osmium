@@ -38,6 +38,16 @@ export class Graph {
     this.nOnPlay.pPlay.trigger(instanceId);
   }
 
+  stop(instanceId: number) {
+    for (const nodeId of this.nodeIds) {
+      const node = this.coreManager.getNode(nodeId).unwrap()!;
+
+      if (!node) continue;
+
+      node.stop(instanceId);
+    }
+  }
+
   step(instanceId: number) {
     for (const node of this.nodesOrdered) {
       node.step(instanceId);
