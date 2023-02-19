@@ -1,3 +1,4 @@
+import type { NoteEvent } from "@/core/classes/pinDataTypes/pinDataTypes";
 import type {
   HandlerCoreGraph,
   HandlerCoreSection,
@@ -9,14 +10,19 @@ const stepTime = 60 / 126 / 4; // 60 mins / BPM / subdivision
 
 export class Player {
   private pm: PlayerManager;
+  private midi: WebMidi.MIDIAccess;
   private ctx: AudioContext | null = null;
   private tracks: Map<number, HandlerCoreTrack> = new Map();
-  private sections: Map<number, HandlerCoreSection> = new Map();
+  private sections: Map<
+    number,
+    { section: HandlerCoreSection; midiOutputId: string | null }
+  > = new Map();
   private graphs: Map<number, HandlerCoreGraph> = new Map();
   private playing = false;
 
-  constructor(pm: PlayerManager) {
+  constructor(pm: PlayerManager, midi: WebMidi.MIDIAccess) {
     this.pm = pm;
+    this.midi = midi;
   }
 
   async play() {
@@ -32,7 +38,7 @@ export class Player {
       this.ctx.resume();
     }
 
-    this.updateState();
+    await this.updateState();
 
     this.scheduleStep(0, this.ctx!.currentTime);
   }
@@ -49,7 +55,12 @@ export class Player {
   }
 
   private async step(pos: number) {
-    for (const section of [...this.sections.values()]) {
+    for (const { section, midiOutputId } of [...this.sections.values()]) {
+      if (midiOutputId === null) return;
+
+      const midiOutput = this.midi.outputs.get(midiOutputId);
+      if (!midiOutput) return;
+
       const { position, length } = section;
 
       play: if (pos >= position && pos <= position + length) {
@@ -61,6 +72,8 @@ export class Player {
             id: graph.id,
             instanceId: section.id,
           });
+
+          midiOutput.send([0xb0, 0x7b, 0]);
 
           break play;
         }
@@ -76,14 +89,49 @@ export class Player {
           id: graph.id,
           instanceId: section.id,
         });
+
+        for (const d of data) {
+          midiOutput.send(this.noteEventToMidi(d));
+        }
       }
     }
+  }
+
+  noteEventToMidi(note: NoteEvent) {
+    if (note.type === "note_on") {
+      return [
+        0x90, // + channel
+        note.pitch,
+        note.velocity,
+      ];
+    }
+
+    if (note.type === "note_off") {
+      return [
+        0x80, // + channel
+        note.pitch,
+        127,
+      ];
+    }
+
+    if (note.type === "all_notes_off") {
+      return [
+        0xb0, //+ channel
+        0x7b,
+        0,
+      ];
+    }
+
+    return [];
   }
 
   async updateState() {
     const tracks = await this.getTracks();
 
-    const sections: Map<number, HandlerCoreSection> = new Map();
+    const sections: Map<
+      number,
+      { section: HandlerCoreSection; midiOutputId: string | null }
+    > = new Map();
 
     for (const track of [...tracks.values()]) {
       const trackSections = await this.getSections(track);
@@ -95,7 +143,7 @@ export class Player {
 
     const graphs: Map<number, HandlerCoreGraph> = new Map();
 
-    for (const section of [...sections.values()]) {
+    for (const { section } of [...sections.values()]) {
       if (section.graphId === null) continue;
 
       const graph = await this.getGraph(section.graphId);
@@ -137,7 +185,10 @@ export class Player {
   }
 
   private async getSections(track: HandlerCoreTrack) {
-    const sections: Map<number, HandlerCoreSection> = new Map();
+    const sections: Map<
+      number,
+      { section: HandlerCoreSection; midiOutputId: string | null }
+    > = new Map();
 
     for (const id of track.sectionIds) {
       const section = await this.pm.cmdsCore
@@ -148,7 +199,7 @@ export class Player {
         });
 
       if (section) {
-        sections.set(id, section);
+        sections.set(id, { section, midiOutputId: track.midiOutputId });
       }
     }
 

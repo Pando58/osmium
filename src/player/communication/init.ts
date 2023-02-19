@@ -1,10 +1,11 @@
+import { cmdsCore } from "@/core/communication/handlers";
 import { ok } from "@/misc/Result";
 import { evtsUI } from "@/ui/communication/handlers";
 import { requestMidiAccess } from "../midi/midiAccess";
-import type { Player } from "../player/Player";
+import { Player } from "../player/Player";
 import { cmdsPlayer, evtsPlayer } from "./handlers";
 
-export async function init(player: Player) {
+export async function init() {
   const midiAccessResult = await requestMidiAccess((_access) => {
     evtsPlayer.emit("update_midi_outputs", null);
   });
@@ -12,6 +13,8 @@ export async function init(player: Player) {
   if (!midiAccessResult.ok) return console.error(midiAccessResult.error);
 
   const midi = midiAccessResult.value;
+
+  const player = new Player({ evtsPlayer, cmdsCore }, midi);
 
   cmdsPlayer.take("midi_outputs", () => {
     return ok(
