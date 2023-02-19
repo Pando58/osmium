@@ -1,6 +1,7 @@
 import type { CoreManager } from "../CoreManager";
 import type { GraphNode } from "./GraphNode";
 import type { OnPlay, OutputNode } from "./nodes";
+import type { NoteEvent } from "./pinDataTypes/pinDataTypes";
 
 export class Graph {
   coreManager: CoreManager;
@@ -46,10 +47,12 @@ export class Graph {
     }
   }
 
-  step(instanceId: number) {
+  step(instanceId: number): NoteEvent[] {
     for (const node of this.nodesOrdered) {
       node.step(instanceId);
     }
+
+    return this.nOutput.pNoteEvents.trigger(instanceId) || [];
   }
 
   instance(sectionId: number) {

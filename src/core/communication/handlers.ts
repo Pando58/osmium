@@ -1,6 +1,7 @@
 import { commandHandler } from "@/communication/commandHandler";
 import { eventHandler } from "@/communication/eventHandler";
 import type {
+  NoteEvent,
   PinDataType,
   PinDataTypes,
   PinIOType,
@@ -15,7 +16,7 @@ export type CoreEventMap = {
   update_node: { id: number };
 };
 
-type CoreCommandMap = {
+export type CoreCommandMap = {
   track_ids: [null, number[]];
   track: [{ id: number }, HandlerCoreTrack];
   section: [{ id: number }, HandlerCoreSection];
@@ -23,6 +24,7 @@ type CoreCommandMap = {
   graph: [{ id: number }, HandlerCoreGraph];
   node: [{ id: number }, HandlerCoreNode];
   pin: [{ id: number }, HandlerCorePin];
+  graph_step: [{ id: number; instanceId: number }, NoteEvent[]];
 };
 
 export type HandlerCoreTrack = {

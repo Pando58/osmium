@@ -5,7 +5,7 @@ type CommandMap = Record<string, [any, any]>;
 type CommandKey<T extends CommandMap> = string & keyof T;
 type CommandReceiver<Req, Res> = (data: Req) => Result<Res, string>;
 
-interface CommandHandler<T extends CommandMap> {
+export interface CommandHandler<T extends CommandMap> {
   take<K extends CommandKey<T>>(
     cmd: K,
     fn: CommandReceiver<T[K][0], T[K][1]>

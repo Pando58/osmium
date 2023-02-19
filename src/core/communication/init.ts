@@ -1,4 +1,5 @@
 import { err, ok, type Result } from "@/misc/Result";
+import { evtsPlayer } from "@/player/communication/handlers";
 import { evtsUI } from "@/ui/communication/handlers";
 import type { CoreManager } from "../CoreManager";
 import {
@@ -232,5 +233,36 @@ export function init(coreManager: CoreManager) {
     const pin = result.value;
 
     pin.setDefaultValue(value);
+  });
+
+  //
+
+  cmdsCore.take("graph_step", ({ id, instanceId }) => {
+    const result = coreManager.getGraph(id);
+    if (!result.ok) return err(result.error);
+
+    const graph = result.value;
+
+    const data = graph.step(instanceId);
+
+    return ok(data);
+  });
+
+  evtsPlayer.on("graph_play", ({ id, instanceId }) => {
+    const result = coreManager.getGraph(id);
+    if (!result.ok) return console.error(result.error);
+
+    const graph = result.value;
+
+    graph.play(instanceId);
+  });
+
+  evtsPlayer.on("graph_stop", ({ id, instanceId }) => {
+    const result = coreManager.getGraph(id);
+    if (!result.ok) return console.error(result.error);
+
+    const graph = result.value;
+
+    graph.stop(instanceId);
   });
 }
