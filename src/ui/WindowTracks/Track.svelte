@@ -7,6 +7,7 @@
   } from "@/core/communication/handlers";
   import { onDestroy } from "svelte";
   import Section from "./Section/Section.svelte";
+  import MidiOutputSelect from "./SelectMidiOutput/SelectMidiOutput.svelte";
 
   export let id: number;
 
@@ -22,7 +23,10 @@
     });
   }
 
-  updateTrack();
+  $: {
+    id;
+    updateTrack();
+  }
 
   evtsCore.on("update_track", updateTrack);
 
@@ -38,9 +42,13 @@
 
 {#if track}
   <li class="debug flex">
-    <div class="debug relative h-16 w-36 p-1">
+    <div class="debug relative w-36 py-1 px-2">
       <span class="text-sm">{track.name}</span>
       <button class="absolute right-2" on:click={newSection}>➕</button>
+      <div class="mt-4 py-1">
+        <span class="block text-xs">Output</span>
+        <MidiOutputSelect {track} />
+      </div>
     </div>
     <div class="debug relative flex-1">
       {#each track.sectionIds as id}

@@ -8,6 +8,14 @@ import type { HandlerCoreSection } from "@/core/communication/handlers";
 
 export const evtsUI = eventHandler<{
   create_track: null;
+  update_track_midi_output_id: {
+    id: number;
+    outputId: string | null;
+  };
+  update_track_midi_output_channel: {
+    sectionId: number;
+    channel: string | null;
+  };
   create_section: { trackId: number };
   update_section: {
     sectionId: number;
@@ -20,8 +28,6 @@ export const evtsUI = eventHandler<{
   move_node: { id: number; x: number; y: number };
   connect_pins: { id1: number; id2: number };
   disconnect_pin: { id: number };
-  update_pin_default_value: {
-    id: number;
-    value: PinDataTypes[PinDataType];
-  };
+  update_pin_default_value: { id: number; value: PinDataTypes[PinDataType] };
+  play: null;
 }>();

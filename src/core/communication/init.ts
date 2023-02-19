@@ -21,12 +21,14 @@ export function init(coreManager: CoreManager) {
 
     if (!track.ok) return err(track.error);
 
-    const { sectionIds, name } = track.value;
+    const { sectionIds, name, midiOutputId, midiOutputChannel } = track.value;
 
     return ok({
       id,
       sectionIds: [...sectionIds],
       name,
+      midiOutputId,
+      midiOutputChannel,
     });
   });
 
@@ -98,6 +100,18 @@ export function init(coreManager: CoreManager) {
 
   evtsUI.on("create_track", () => {
     coreManager.newTrack();
+  });
+
+  evtsUI.on("update_track_midi_output_id", ({ id, outputId }) => {
+    const result = coreManager.getTrack(id);
+
+    if (!result.ok) return console.error(result.error);
+
+    const track = result.value;
+
+    track.midiOutputId = outputId;
+
+    evtsCore.emit("update_track", { id });
   });
 
   evtsUI.on("create_section", ({ trackId }) => {

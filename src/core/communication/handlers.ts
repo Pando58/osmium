@@ -29,6 +29,8 @@ export type HandlerCoreTrack = {
   id: number;
   sectionIds: number[];
   name: string;
+  midiOutputId: string | null;
+  midiOutputChannel: number;
 };
 
 export type HandlerCoreSection = {
