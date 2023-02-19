@@ -7,7 +7,8 @@
   } from "@/core/communication/handlers";
   import { onDestroy } from "svelte";
   import Section from "./Section/Section.svelte";
-  import MidiOutputSelect from "./SelectMidiOutput/SelectMidiOutput.svelte";
+  import SelectMidiOutputId from "./midiOutput/SelectMidiOutputId.svelte";
+  import SelectMidiOutputChannel from "./midiOutput/SelectMidiOutputChannel.svelte";
 
   export let id: number;
 
@@ -47,7 +48,11 @@
       <button class="absolute right-2" on:click={newSection}>➕</button>
       <div class="mt-4 py-1">
         <span class="block text-xs">Output</span>
-        <MidiOutputSelect {track} />
+        <SelectMidiOutputId {track} />
+      </div>
+      <div class="py-1">
+        <span class="block text-xs">Channel</span>
+        <SelectMidiOutputChannel {track} />
       </div>
     </div>
     <div class="debug relative flex-1">

@@ -15,7 +15,11 @@ export class Player {
   private tracks: Map<number, HandlerCoreTrack> = new Map();
   private sections: Map<
     number,
-    { section: HandlerCoreSection; midiOutputId: string | null }
+    {
+      section: HandlerCoreSection;
+      midiOutputId: string | null;
+      channel: number;
+    }
   > = new Map();
   private graphs: Map<number, HandlerCoreGraph> = new Map();
   private playing = false;
@@ -55,7 +59,9 @@ export class Player {
   }
 
   private async step(pos: number) {
-    for (const { section, midiOutputId } of [...this.sections.values()]) {
+    for (const { section, midiOutputId, channel } of [
+      ...this.sections.values(),
+    ]) {
       if (midiOutputId === null) return;
 
       const midiOutput = this.midi.outputs.get(midiOutputId);
@@ -91,35 +97,23 @@ export class Player {
         });
 
         for (const d of data) {
-          midiOutput.send(this.noteEventToMidi(d));
+          midiOutput.send(this.noteEventToMidi(d, channel));
         }
       }
     }
   }
 
-  noteEventToMidi(note: NoteEvent) {
+  noteEventToMidi(note: NoteEvent, channel: number) {
     if (note.type === "note_on") {
-      return [
-        0x90, // + channel
-        note.pitch,
-        note.velocity,
-      ];
+      return [0x90 + channel, note.pitch, note.velocity];
     }
 
     if (note.type === "note_off") {
-      return [
-        0x80, // + channel
-        note.pitch,
-        127,
-      ];
+      return [0x80 + channel, note.pitch, 127];
     }
 
     if (note.type === "all_notes_off") {
-      return [
-        0xb0, //+ channel
-        0x7b,
-        0,
-      ];
+      return [0xb0 + channel, 0x7b, 0];
     }
 
     return [];
@@ -130,7 +124,11 @@ export class Player {
 
     const sections: Map<
       number,
-      { section: HandlerCoreSection; midiOutputId: string | null }
+      {
+        section: HandlerCoreSection;
+        midiOutputId: string | null;
+        channel: number;
+      }
     > = new Map();
 
     for (const track of [...tracks.values()]) {
@@ -187,7 +185,11 @@ export class Player {
   private async getSections(track: HandlerCoreTrack) {
     const sections: Map<
       number,
-      { section: HandlerCoreSection; midiOutputId: string | null }
+      {
+        section: HandlerCoreSection;
+        midiOutputId: string | null;
+        channel: number;
+      }
     > = new Map();
 
     for (const id of track.sectionIds) {
@@ -199,7 +201,11 @@ export class Player {
         });
 
       if (section) {
-        sections.set(id, { section, midiOutputId: track.midiOutputId });
+        sections.set(id, {
+          section,
+          midiOutputId: track.midiOutputId,
+          channel: track.midiOutputChannel,
+        });
       }
     }
 

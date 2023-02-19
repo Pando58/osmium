@@ -115,6 +115,22 @@ export function init(coreManager: CoreManager) {
     evtsCore.emit("update_track", { id });
   });
 
+  evtsUI.on("update_track_midi_output_channel", ({ id, channel }) => {
+    if (channel < 0 || channel > 15) {
+      return console.error("Midi channels must have a value between 0 and 15");
+    }
+
+    const result = coreManager.getTrack(id);
+
+    if (!result.ok) return console.error(result.error);
+
+    const track = result.value;
+
+    track.midiOutputChannel = channel;
+
+    evtsCore.emit("update_track", { id });
+  });
+
   evtsUI.on("create_section", ({ trackId }) => {
     coreManager.newSection(trackId);
   });

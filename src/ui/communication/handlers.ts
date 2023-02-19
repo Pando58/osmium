@@ -13,8 +13,8 @@ export const evtsUI = eventHandler<{
     outputId: string | null;
   };
   update_track_midi_output_channel: {
-    sectionId: number;
-    channel: string | null;
+    id: number;
+    channel: number;
   };
   create_section: { trackId: number };
   update_section: {
