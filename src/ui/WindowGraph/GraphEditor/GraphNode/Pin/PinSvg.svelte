@@ -28,6 +28,8 @@
 
   let previousId = -1;
 
+  let random = Math.random().toString().substring(2);
+
   $: {
     if (previousId === -1) previousId = id;
 
@@ -51,7 +53,7 @@
     {#if connected}
       <polygon points="3.215,0 24,12 3.215,24" fill={pinColors[dataType]} />
     {:else}
-      <mask id="outline-mask-execution">
+      <mask id={`outline-mask-exec-${random}`}>
         <rect x="-2" y="-2" width="28" height="28" fill="white" />
         <polygon points="6.215,5.196 18,12 6.215,18.804" fill="black" />
       </mask>
@@ -59,11 +61,11 @@
         points="3.215,0 24,12 3.215,24"
         fill={pinColors[dataType]}
         opacity="0.8"
-        mask="url(#outline-mask-execution)"
+        mask={`url(#outline-mask-exec-${random})`}
       />
     {/if}
   {:else}
-    <mask id="outline-mask">
+    <mask id={`outline-mask-data-${random}`}>
       <rect x="-2" y="-2" width="28" height="28" fill="white" />
       <circle cx="12" cy="12" r="9" fill="black" />
     </mask>
@@ -73,7 +75,7 @@
       r="12"
       fill={pinColors[dataType]}
       opacity="0.8"
-      mask="url(#outline-mask)"
+      mask={`url(#outline-mask-data-${random})`}
     />
     {#if connected}
       <circle cx="12" cy="12" r="6" fill={pinColors[dataType]} />
