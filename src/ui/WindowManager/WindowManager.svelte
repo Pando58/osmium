@@ -77,10 +77,14 @@
 
   function onToggleFloating({ detail }: CustomEvent<{ windowId: number }>) {
     const win = $windows.get(detail.windowId);
-
     if (!win) return;
 
     win.floating = !win.floating;
+    $windows = $windows;
+  }
+
+  function onCloseWindow({ detail }: CustomEvent<{ windowId: number }>) {
+    $windows.delete(detail.windowId);
     $windows = $windows;
   }
 
@@ -100,6 +104,7 @@
       {...win}
       on:pointerdown_window={onPointerDownWindow}
       on:toggle_floating={onToggleFloating}
+      on:close={onCloseWindow}
     />
   {/each}
 </div>

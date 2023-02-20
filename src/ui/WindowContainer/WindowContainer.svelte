@@ -1,6 +1,7 @@
 <script lang="ts">
-  import floating_inactive from "@/assets/windowIcons/floating_inactive.svg";
-  import floating_active from "@/assets/windowIcons/floating_active.svg";
+  import iconFloatingInactive from "@/assets/windowIcons/floating_inactive.svg";
+  import iconFloatingActive from "@/assets/windowIcons/floating_active.svg";
+  import iconClose from "@/assets/windowIcons/close.svg";
   import { createEventDispatcher } from "svelte";
   import type { TabProps } from "../WindowManager/types";
 
@@ -42,6 +43,12 @@
       windowId: id,
     });
   }
+
+  function closeWindow() {
+    dispatch("close", {
+      windowId: id,
+    });
+  }
 </script>
 
 <section
@@ -69,16 +76,24 @@
           </div>
         {/each}
       </div>
-      <button
-        class="relative m-1 grid w-4 place-items-center"
-        on:click={toggleFloating}
-      >
-        <img
-          src={floating ? floating_active : floating_inactive}
-          class="w-2"
-          alt="floating active"
-        />
-      </button>
+      <div class="flex items-center gap-1 pr-1">
+        <button
+          class="relative grid h-4 w-4 place-items-center"
+          on:click={toggleFloating}
+        >
+          <img
+            src={floating ? iconFloatingActive : iconFloatingInactive}
+            class="w-2"
+            alt="floating active"
+          />
+        </button>
+        <button
+          class="relative grid h-4 w-4 place-items-center"
+          on:click={closeWindow}
+        >
+          <img src={iconClose} class="w-2" alt="floating active" />
+        </button>
+      </div>
     </div>
     <div class="relative flex-1 bg-zinc-800">
       <div class="absolute inset-0 overflow-hidden">
