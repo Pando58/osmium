@@ -140,8 +140,10 @@ export function init(coreManager: CoreManager) {
 
     if (!section.ok) return console.error(section.error);
 
-    if ("position" in props) section.value.position = props.position!;
-    if ("length" in props) section.value.length = props.length!;
+    if ("position" in props)
+      section.value.position = Math.max(0, Math.floor(props.position!));
+    if ("length" in props)
+      section.value.length = Math.max(1, Math.floor(props.length!));
 
     evtsCore.emit("update_section", { id: sectionId });
   });

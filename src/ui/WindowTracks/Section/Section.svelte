@@ -5,6 +5,8 @@
     type HandlerCoreSection,
   } from "@/core/communication/handlers";
   import { appKey, type AppContext } from "@/ui/appContext";
+  import { evtsUI } from "@/ui/communication/handlers";
+  import ResizableDiv from "@/ui/ResizableDiv/ResizableDiv.svelte";
   import WindowSectionEditMenu from "@/ui/WindowSectionEditMenu/WindowSectionEditMenu.svelte";
   import { getContext, onDestroy } from "svelte";
 
@@ -31,7 +33,6 @@
   });
 
   //
-
   const { createWindow } = getContext<AppContext>(appKey);
 
   function openEditMenu() {
@@ -50,13 +51,42 @@
       ],
     });
   }
+
+  //
+  function resize({
+    detail,
+  }: CustomEvent<{
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  }>) {
+    if (!section) return;
+
+    evtsUI.emit("update_section", {
+      sectionId: id,
+      props: {
+        position: detail.x,
+        length: detail.w,
+      },
+    });
+  }
 </script>
 
 {#if section}
-  <div
-    class="debug absolute inset-y-0"
-    style:left={section.position + "px"}
-    style:width={section.length + "px"}
-    on:dblclick={openEditMenu}
-  />
+  <ResizableDiv
+    class_="inset-y-0"
+    x={section.position}
+    w={section.length}
+    minW={1}
+    ignoreY
+    on:update={resize}
+  >
+    <div class="absolute inset-0 overflow-hidden">
+      <span class="mt-1 ml-1.5 truncate text-xs">
+        Section {section.id}
+      </span>
+    </div>
+    <div class="absolute inset-0" data-drag on:dblclick={openEditMenu} />
+  </ResizableDiv>
 {/if}
