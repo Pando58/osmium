@@ -85,8 +85,10 @@
     {vprops}
     on:update={resize}
   >
-    <div class="absolute inset-0 overflow-hidden">
-      <span class="mt-1 ml-1.5 truncate text-xs">
+    <div
+      class="absolute inset-0 overflow-hidden rounded border-2 border-cyan-400 bg-cyan-600"
+    >
+      <span class="mt-1 ml-1.5 truncate text-xs font-semibold text-black/50">
         Section {section.id}
       </span>
     </div>

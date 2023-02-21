@@ -44,10 +44,14 @@
 </script>
 
 {#if track}
-  <li class="debug flex">
-    <div class="debug w-36 overflow-hidden py-1 px-2">
-      <span class="text-sm">{track.name}</span>
-      <button class="absolute right-2" on:click={newSection}>➕</button>
+  <li class="flex border-y border-zinc-900">
+    <div
+      class="w-36 overflow-hidden border-r-2 border-zinc-900 bg-zinc-800 py-1 px-2"
+    >
+      <div class="flex justify-between">
+        <span class="text-sm">{track.name}</span>
+        <button on:click={newSection}>➕</button>
+      </div>
       <div class="mt-4 py-1">
         <span class="block text-xs">Output</span>
         <SelectMidiOutputId {track} />
@@ -57,7 +61,7 @@
         <SelectMidiOutputChannel {track} />
       </div>
     </div>
-    <div class="debug relative flex-1">
+    <div class="relative flex-1 overflow-hidden bg-zinc-850">
       {#each track.sectionIds as id}
         <Section {id} {vprops} />
       {/each}

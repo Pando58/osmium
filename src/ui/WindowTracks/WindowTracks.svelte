@@ -32,7 +32,7 @@
   }
 </script>
 
-<section class="debug absolute inset-0">
+<section class="debug absolute inset-0 bg-zinc-850">
   <TransformViewport
     snap={[0.5, 0]}
     scrollRate={50}
@@ -40,12 +40,12 @@
     minX={0}
     let:vprops
   >
-    <ul>
+    <ul class="debug h-full">
       {#each trackIds as id}
         <Track {id} {vprops} />
       {/each}
-      <li class="debug">
-        <div class="debug grid h-16 w-36 place-items-center">
+      <li class="border-t border-zinc-900">
+        <div class="grid h-16 w-36 place-items-center">
           <button on:click={newTrack}>➕</button>
         </div>
       </li>

@@ -117,7 +117,7 @@
 </script>
 
 <div
-  class={"debug absolute " + class_}
+  class={"absolute " + class_}
   style:left={!ignoreX ? x + "px" : null}
   style:width={!ignoreX ? w + "px" : null}
   style:top={!ignoreY ? y + "px" : null}
