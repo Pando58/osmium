@@ -3,6 +3,7 @@
   import { cmdsCore, evtsCore } from "@/core/communication/handlers";
   import { onDestroy } from "svelte";
   import Track from "./Track.svelte";
+  import TransformViewport from "../TransformViewport/TransformViewport.svelte";
 
   export let winName: string; // doesn't work using const
   winName = "Tracks";
@@ -32,14 +33,22 @@
 </script>
 
 <section class="debug absolute inset-0">
-  <ul>
-    {#each trackIds as id}
-      <Track {id} />
-    {/each}
-    <li class="debug">
-      <div class="debug grid h-16 w-36 place-items-center">
-        <button on:click={newTrack}>➕</button>
-      </div>
-    </li>
-  </ul>
+  <TransformViewport
+    snap={[0.5, 0]}
+    scrollRate={50}
+    scaleRate={0.25}
+    minX={0}
+    let:vprops
+  >
+    <ul>
+      {#each trackIds as id}
+        <Track {id} {vprops} />
+      {/each}
+      <li class="debug">
+        <div class="debug grid h-16 w-36 place-items-center">
+          <button on:click={newTrack}>➕</button>
+        </div>
+      </li>
+    </ul>
+  </TransformViewport>
 </section>

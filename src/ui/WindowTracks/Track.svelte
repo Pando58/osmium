@@ -9,8 +9,10 @@
   import Section from "./Section/Section.svelte";
   import SelectMidiOutputId from "./midiOutput/SelectMidiOutputId.svelte";
   import SelectMidiOutputChannel from "./midiOutput/SelectMidiOutputChannel.svelte";
+  import type { TransformViewportProps } from "../TransformViewport/TransformViewport.svelte";
 
   export let id: number;
+  export let vprops: TransformViewportProps;
 
   let track: HandlerCoreTrack | null = null;
 
@@ -43,7 +45,7 @@
 
 {#if track}
   <li class="debug flex">
-    <div class="debug relative w-36 py-1 px-2">
+    <div class="debug w-36 overflow-hidden py-1 px-2">
       <span class="text-sm">{track.name}</span>
       <button class="absolute right-2" on:click={newSection}>➕</button>
       <div class="mt-4 py-1">
@@ -57,7 +59,7 @@
     </div>
     <div class="debug relative flex-1">
       {#each track.sectionIds as id}
-        <Section {id} />
+        <Section {id} {vprops} />
       {/each}
     </div>
   </li>

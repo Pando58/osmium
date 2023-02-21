@@ -6,11 +6,13 @@
   } from "@/core/communication/handlers";
   import { appKey, type AppContext } from "@/ui/appContext";
   import { evtsUI } from "@/ui/communication/handlers";
-  import ResizableDiv from "@/ui/ResizableDiv/ResizableDiv.svelte";
+  import TransformResizableDiv from "@/ui/ResizableDiv/TransformResizableDiv.svelte";
+  import type { TransformViewportProps } from "@/ui/TransformViewport/TransformViewport.svelte";
   import WindowSectionEditMenu from "@/ui/WindowSectionEditMenu/WindowSectionEditMenu.svelte";
   import { getContext, onDestroy } from "svelte";
 
   export let id: number;
+  export let vprops: TransformViewportProps;
 
   let section: HandlerCoreSection | null = null;
 
@@ -74,12 +76,13 @@
 </script>
 
 {#if section}
-  <ResizableDiv
+  <TransformResizableDiv
     class_="inset-y-0"
     x={section.position}
     w={section.length}
     minW={1}
     ignoreY
+    {vprops}
     on:update={resize}
   >
     <div class="absolute inset-0 overflow-hidden">
@@ -88,5 +91,5 @@
       </span>
     </div>
     <div class="absolute inset-0" data-drag on:dblclick={openEditMenu} />
-  </ResizableDiv>
+  </TransformResizableDiv>
 {/if}
