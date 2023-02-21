@@ -11,6 +11,10 @@
   export let lockY = false;
   export let ignoreX = false;
   export let ignoreY = false;
+  export let transformX: (n: number) => number = (n) => n;
+  export let transformY: (n: number) => number = (n) => n;
+  export let transformW: (n: number) => number = (n) => n;
+  export let transformH: (n: number) => number = (n) => n;
   export let class_ = "";
 
   type HandlerName = "n" | "s" | "w" | "e" | "nw" | "ne" | "sw" | "se";
@@ -52,8 +56,8 @@
 
   function onPointerMove(e: PointerEvent) {
     if (dragging) {
-      if (!lockX) x = e.clientX - clickMX;
-      if (!lockY) y = e.clientY - clickMY;
+      if (!lockX) x = transformX(e.clientX - clickMX);
+      if (!lockY) y = transformY(e.clientY - clickMY);
 
       dispatch("update", { x, y, w, h });
 
@@ -68,8 +72,8 @@
         activeHandler === "nw" ||
         activeHandler === "sw"
       ) {
-        x = Math.min(clickX + clickW - minW, e.clientX - clickMX);
-        w = Math.max(minW, clickX - e.clientX + clickW + clickMX);
+        x = transformX(Math.min(clickX + clickW - minW, e.clientX - clickMX));
+        w = transformW(Math.max(minW, clickX - e.clientX + clickW + clickMX));
       }
 
       if (
@@ -77,7 +81,7 @@
         activeHandler === "ne" ||
         activeHandler === "se"
       ) {
-        w = Math.max(minW, e.clientX - clickX + clickW - clickMX);
+        w = transformW(Math.max(minW, e.clientX - clickX + clickW - clickMX));
       }
     }
 
@@ -87,8 +91,8 @@
         activeHandler === "nw" ||
         activeHandler === "ne"
       ) {
-        y = Math.min(clickY + clickH - minH, e.clientY - clickMY);
-        h = Math.max(minH, clickY - e.clientY + clickH + clickMY);
+        y = transformY(Math.min(clickY + clickH - minH, e.clientY - clickMY));
+        h = transformH(Math.max(minH, clickY - e.clientY + clickH + clickMY));
       }
 
       if (
@@ -96,7 +100,7 @@
         activeHandler === "sw" ||
         activeHandler === "se"
       ) {
-        h = Math.max(minH, e.clientY - clickY + clickH - clickMY);
+        h = transformH(Math.max(minH, e.clientY - clickY + clickH - clickMY));
       }
     }
 
@@ -162,7 +166,7 @@
   }
 
   [data-corner] {
-    @apply absolute h-2 w-2 bg-red-400/40;
+    @apply absolute h-2 w-2;
   }
 
   .n {
