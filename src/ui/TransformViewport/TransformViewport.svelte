@@ -20,6 +20,8 @@
   export let snap: [number, number] = [0, 0];
   export let scrollRate = 1;
   export let scaleRate = 0.25;
+  export let minX: number | null = null;
+  export let minY: number | null = null;
 
   let vx = 0;
   let vy = 0;
@@ -32,6 +34,14 @@
 
   $: vzx = Math.pow(2, vzxLevel * scaleRate);
   $: vzy = Math.pow(2, vzyLevel * scaleRate);
+
+  $: if (minX !== null) {
+    vx = Math.max(vx, (vw * snap[0]) / vzx + minX);
+  }
+
+  $: if (minY !== null) {
+    vy = Math.max(vy, (vh * snap[1]) / vzy + minY);
+  }
 
   function onWheel(e: WheelEvent) {
     e.preventDefault();
